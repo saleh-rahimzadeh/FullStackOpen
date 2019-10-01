@@ -1,0 +1,32 @@
+#------------------------------------------------------------------------------#
+#- Created by Saleh Rahimzadeh                                                 #
+#- Copyright (C) 2019                                                          #
+#- https://saleh.sleek.page                                                    #
+#------------------------------------------------------------------------------#
+
+title SPA Diagram
+
+participant USER
+participant BROWSER
+participant SERVER
+
+USER     ->   BROWSER :  Entering spa url 
+BROWSER  ->   SERVER  :  HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+SERVER   -->  BROWSER :  Responding with HTTP status code 200 and HTML code as response
+BROWSER  ->   SERVER  :  HTTP GET /main.css
+SERVER   -->  BROWSER :  Responding with HTTP status code 200 and main.css as response
+BROWSER  ->   SERVER  :  HTTP GET /spa.js
+SERVER   -->  BROWSER :  Responding with HTTP status code 200 and spa.js as response
+BROWSER  ->   BROWSER :  Executing spa.js
+note over BROWSER :  Requesting JSON data from SERVER 
+BROWSER  ->   SERVER  :  HTTP GET /data.json
+SERVER   -->  BROWSER :  Responding with HTTP status code 200 and JSON data as response
+note over BROWSER :
+Executing the event handler
+Parsing response (JSON data) and saving result into notes array
+end note
+note over BROWSER :
+Rendring notes from notes array
+Removing previous notes and replace them with new notes
+end note
+BROWSER  -->  USER    :  Rendered html page
