@@ -15,34 +15,36 @@ import Total    from './Total';
 
 
 const App = () => {
-  console.log('Part1: 4')
+  console.log('Part1: 5')
   console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
   // Data difinitions
-  const course     = 'Half Stack application development'
-  const parts = [
-    {
-      name: 'Fundamentals of React',
-      exercises: 10
-    },
-    {
-      name: 'Using props to pass data',
-      exercises: 7
-    },
-    {
-      name: 'State of a component',
-      exercises: 14
-    }
-  ]  
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
+  }
 
   console.log('Rendering Application...')
 
   // Rendering Components
   return (
     <div>    
-    	<Header Course={course} />
-    	<Content Parts={parts} />
-    	<Total Parts={parts} />
+    	<Header Course={course.name} />
+    	<Content Parts={course.parts} />
+    	<Total Parts={course.parts} />
     </div>
   )
 }
