@@ -15,6 +15,7 @@ import Total    from './Total';
 
 
 const App = () => {
+  console.log('Part1: 2')
   console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
   // Data difinitions
