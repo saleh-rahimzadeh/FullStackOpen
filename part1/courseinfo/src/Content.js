@@ -8,9 +8,9 @@ function Content(props) {
 
 	return (
 	    <>
-	      <Part Name={props.Part1} Number={props.Exercise1} />
-	      <Part Name={props.Part2} Number={props.Exercise2} />
-	      <Part Name={props.Part3} Number={props.Exercise3} />
+	      <Part Name={props.Part1.name} Number={props.Part1.exercises} />
+	      <Part Name={props.Part2.name} Number={props.Part2.exercises} />
+	      <Part Name={props.Part3.name} Number={props.Part3.exercises} />
 	    </>
 	)
 }
