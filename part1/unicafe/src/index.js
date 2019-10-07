@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 6')
+console.log('Part1: 7')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
@@ -36,6 +36,23 @@ const App = () => {
   }
 
 
+  /* Functions */
+  const calculateAll = () => {
+    return good + neutral + bad
+  }
+
+  const calculatePositive = () => {
+    const all = calculateAll()
+    return all === 0 ? 0 : good * 100 / all
+  }
+
+  const calculateAverage = () => {
+    const all = calculateAll()
+    return all === 0 ? 0 : (good + (bad * -1)) / all
+  }
+
+
+  /* Rendering */
   console.log('Rendering Application...')
 
   return (
@@ -60,6 +77,12 @@ const App = () => {
         Neutral: {neutral}
         <br />
         Bad: {bad}
+        <br />
+        All: {calculateAll()}
+        <br />
+        Average: {calculateAverage()}
+        <br />
+        Positive: {calculatePositive()} %
       </p>
     </>
   )
