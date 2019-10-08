@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 10')
+console.log('Part1: 11')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
@@ -20,9 +20,10 @@ const Statistic = ({ title, value }) => {
 
   /* Rendering Statistic */
   return (
-    <div>
-      {title} : {value}
-    </div>
+    <tr>
+      <td>{title}</td>
+      <td>{value}</td>
+    </tr>
   )
 
 }
@@ -45,7 +46,7 @@ const Statistics = ({ good, neutral, bad }) => {
 
   const calculateAverage = () => {
     const all = calculateAll()
-    return all === 0 ? 0 : (good + (bad * -1)) / all
+    return all === 0 ? 0 : (good + bad * -1) / all
   }
 
 
@@ -56,14 +57,16 @@ const Statistics = ({ good, neutral, bad }) => {
     )
   } else {
     return (
-      <>
-        <Statistic title="Good" value={good} />
-        <Statistic title="Neutral" value={neutral} />
-        <Statistic title="Bad" value={bad} />
-        <Statistic title="All" value={calculateAll()} />
-        <Statistic title="Average" value={calculateAverage()} />
-        <Statistic title="Positive" value={calculatePositive() + ' %'} />
-      </>
+      <table>
+        <tbody>
+          <Statistic title="Good"     value={good} />
+          <Statistic title="Neutral"  value={neutral} />
+          <Statistic title="Bad"      value={bad} />
+          <Statistic title="All"      value={calculateAll()} />
+          <Statistic title="Average"  value={calculateAverage()} />
+          <Statistic title="Positive" value={calculatePositive() + ' %'} />
+        </tbody>
+      </table>
     )
   }
 
@@ -132,7 +135,7 @@ const App = () => {
 
   return (
     <>
-      <h1>unicafe</h1>
+      <h1>[ unicafe ]</h1>
 
       <h2>Give feedback</h2>
       <Buttons 
