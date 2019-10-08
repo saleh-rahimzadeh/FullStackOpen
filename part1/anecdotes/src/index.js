@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 12')
+console.log('Part1: 13')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
@@ -29,11 +29,12 @@ const anecdotes = [
 ------------------------------------------------------------------------------- */
 const App = (props) => {
 
-  /* State */
+  /* States */
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes]       = useState(new Array(anecdotes.length).fill(0))
 
 
-  /* Event handler */
+  /* Event handlers */
   const selectAnecdote = () => {
     let num = 0
     do {
@@ -42,6 +43,12 @@ const App = (props) => {
     console.log('Random Number:', num)
 
     setSelected(num)    
+  }
+
+  const doVote = () => {
+    let clone = [...votes]
+    clone[selected] += 1
+    setVotes(clone);
   }
 
 
@@ -53,8 +60,14 @@ const App = (props) => {
       <button onClick={selectAnecdote}>
         Next Anecdote
       </button>
+      <button onClick={doVote}>
+        Vote
+      </button>
       <p>
         {props.anecdotes[selected]}
+      </p>
+      <p>
+        has {votes[selected]} vote{votes[selected] > 1 ? 's' : ''}
       </p>
     </div>
   )
