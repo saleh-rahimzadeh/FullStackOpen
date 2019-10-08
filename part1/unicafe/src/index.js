@@ -9,27 +9,43 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 9')
+console.log('Part1: 10')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
 
-/* Statistics Component */
-const Statistics = (props) => {
+/* Statistic Component
+------------------------------------------------------------------------------- */
+const Statistic = ({ title, value }) => {
+
+  /* Rendering Statistic */
+  return (
+    <div>
+      {title} : {value}
+    </div>
+  )
+
+}
+
+
+
+/* Statistics Component
+------------------------------------------------------------------------------- */
+const Statistics = ({ good, neutral, bad }) => {
 
   /* Functions */
   const calculateAll = () => {
-    return props.good + props.neutral + props.bad
+    return good + neutral + bad
   }
 
   const calculatePositive = () => {
     const all = calculateAll()
-    return all === 0 ? 0 : props.good * 100 / all
+    return all === 0 ? 0 : good * 100 / all
   }
 
   const calculateAverage = () => {
     const all = calculateAll()
-    return all === 0 ? 0 : (props.good + (props.bad * -1)) / all
+    return all === 0 ? 0 : (good + (bad * -1)) / all
   }
 
 
@@ -41,20 +57,12 @@ const Statistics = (props) => {
   } else {
     return (
       <>
-        <h2>Statistics</h2>
-        <p>
-          Good: {props.good}
-          <br />
-          Neutral: {props.neutral}
-          <br />
-          Bad: {props.bad}
-          <br />
-          All: {calculateAll()}
-          <br />
-          Average: {calculateAverage()}
-          <br />
-          Positive: {calculatePositive()} %
-        </p>
+        <Statistic title="Good" value={good} />
+        <Statistic title="Neutral" value={neutral} />
+        <Statistic title="Bad" value={bad} />
+        <Statistic title="All" value={calculateAll()} />
+        <Statistic title="Average" value={calculateAverage()} />
+        <Statistic title="Positive" value={calculatePositive() + ' %'} />
       </>
     )
   }
@@ -63,7 +71,40 @@ const Statistics = (props) => {
 
 
 
-/* App Component */
+/* Button Component
+------------------------------------------------------------------------------- */
+const Button = ({ title, eventHandler }) => {
+
+  /* Rendering Button */
+  return (
+    <button onClick={eventHandler}>
+      {title}
+    </button>
+  )
+
+}
+
+
+
+/* Buttons Component
+------------------------------------------------------------------------------- */
+const Buttons = ( { goodEventHandler, neutralEventHandler, badEventHadler } ) => {
+
+  /* Rendering Buttons */
+  return (
+    <div>
+      <Button title="Good"    eventHandler={goodEventHandler} />
+      <Button title="Neutral" eventHandler={neutralEventHandler} />
+      <Button title="Bad"     eventHandler={badEventHadler} />
+    </div>
+  )
+
+}
+
+
+
+/* App Component
+------------------------------------------------------------------------------- */
 const App = () => {
 
   /* States */
@@ -94,17 +135,18 @@ const App = () => {
       <h1>unicafe</h1>
 
       <h2>Give feedback</h2>
-      <button onClick={setGoodHandler}>
-        Good
-      </button>
-      <button onClick={setNeutralHandler}>
-        Neutral
-      </button>
-      <button onClick={setBadHandler}>
-        Bad
-      </button>
+      <Buttons 
+        goodEventHandler={setGoodHandler} 
+        neutralEventHandler={setNeutralHandler} 
+        badEventHadler={setBadHandler} 
+      />
 
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <h2>Statistics</h2>
+      <Statistics 
+        good={good} 
+        neutral={neutral} 
+        bad={bad} 
+      />
     </>
   )
 
