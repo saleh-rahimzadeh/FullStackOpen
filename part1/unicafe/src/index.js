@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 8')
+console.log('Part1: 9')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
@@ -34,24 +34,31 @@ const Statistics = (props) => {
 
 
   /* Rendering Statistics */
-  return (
-    <>
-      <h2>Statistics</h2>
-      <p>
-        Good: {props.good}
-        <br />
-        Neutral: {props.neutral}
-        <br />
-        Bad: {props.bad}
-        <br />
-        All: {calculateAll()}
-        <br />
-        Average: {calculateAverage()}
-        <br />
-        Positive: {calculatePositive()} %
-      </p>
-    </>
-  )
+  if (calculateAll() === 0) {
+    return (
+      <p>No feedback given.</p>
+    )
+  } else {
+    return (
+      <>
+        <h2>Statistics</h2>
+        <p>
+          Good: {props.good}
+          <br />
+          Neutral: {props.neutral}
+          <br />
+          Bad: {props.bad}
+          <br />
+          All: {calculateAll()}
+          <br />
+          Average: {calculateAverage()}
+          <br />
+          Positive: {calculatePositive()} %
+        </p>
+      </>
+    )
+  }
+
 }
 
 
