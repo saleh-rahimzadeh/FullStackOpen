@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 13')
+console.log('Part1: 14')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
@@ -25,20 +25,40 @@ const anecdotes = [
 
 
 
+/* MostVisited Component
+------------------------------------------------------------------------------- */
+const MostVisited = ( {anecdotes, votes} ) => {
+  let position = votes.indexOf(Math.max.apply(Math, votes))
+
+  return (
+    <>
+      <p>
+        {anecdotes[position]}
+      </p>
+      <p>
+        has {votes[position]} vote{votes[position] > 1 ? 's' : ''}
+      </p>
+    </>
+  )
+
+}
+
+
+
 /* App Component
 ------------------------------------------------------------------------------- */
 const App = (props) => {
 
   /* States */
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes]       = useState(new Array(anecdotes.length).fill(0))
+  const [votes, setVotes]       = useState(new Array(props.anecdotes.length).fill(0))
 
 
   /* Event handlers */
   const selectAnecdote = () => {
     let num = 0
     do {
-      num = Math.floor(Math.random() * anecdotes.length)
+      num = Math.floor(Math.random() * props.anecdotes.length)
     } while (num === 6)
     console.log('Random Number:', num)
 
@@ -48,7 +68,7 @@ const App = (props) => {
   const doVote = () => {
     let clone = [...votes]
     clone[selected] += 1
-    setVotes(clone);
+    setVotes(clone)
   }
 
 
@@ -56,20 +76,26 @@ const App = (props) => {
   console.log('Rendering Application...')
 
   return (
-    <div>
-      <button onClick={selectAnecdote}>
-        Next Anecdote
-      </button>
-      <button onClick={doVote}>
-        Vote
-      </button>
+    <>
+      <h1>[ anecdotes ]</h1>
+
+      <h2>Anecdote of the day</h2>
       <p>
         {props.anecdotes[selected]}
       </p>
       <p>
         has {votes[selected]} vote{votes[selected] > 1 ? 's' : ''}
       </p>
-    </div>
+      <button onClick={selectAnecdote}>
+        Next Anecdote
+      </button>
+      <button onClick={doVote}>
+        Vote
+      </button>
+
+      <h2>Anecdote with most votes</h2>
+      <MostVisited anecdotes={anecdotes} votes={votes} />
+    </>
   )
 
 }
