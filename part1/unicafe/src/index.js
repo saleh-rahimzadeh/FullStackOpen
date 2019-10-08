@@ -9,11 +9,54 @@
 import React, { useState } from 'react'
 import ReactDOM            from 'react-dom'
 
-console.log('Part1: 7')
+console.log('Part1: 8')
 console.log(`Starting Application [${(new Date()).toLocaleTimeString()}]`)
 
 
 
+/* Statistics Component */
+const Statistics = (props) => {
+
+  /* Functions */
+  const calculateAll = () => {
+    return props.good + props.neutral + props.bad
+  }
+
+  const calculatePositive = () => {
+    const all = calculateAll()
+    return all === 0 ? 0 : props.good * 100 / all
+  }
+
+  const calculateAverage = () => {
+    const all = calculateAll()
+    return all === 0 ? 0 : (props.good + (props.bad * -1)) / all
+  }
+
+
+  /* Rendering Statistics */
+  return (
+    <>
+      <h2>Statistics</h2>
+      <p>
+        Good: {props.good}
+        <br />
+        Neutral: {props.neutral}
+        <br />
+        Bad: {props.bad}
+        <br />
+        All: {calculateAll()}
+        <br />
+        Average: {calculateAverage()}
+        <br />
+        Positive: {calculatePositive()} %
+      </p>
+    </>
+  )
+}
+
+
+
+/* App Component */
 const App = () => {
 
   /* States */
@@ -36,23 +79,7 @@ const App = () => {
   }
 
 
-  /* Functions */
-  const calculateAll = () => {
-    return good + neutral + bad
-  }
-
-  const calculatePositive = () => {
-    const all = calculateAll()
-    return all === 0 ? 0 : good * 100 / all
-  }
-
-  const calculateAverage = () => {
-    const all = calculateAll()
-    return all === 0 ? 0 : (good + (bad * -1)) / all
-  }
-
-
-  /* Rendering */
+  /* Rendering Application */
   console.log('Rendering Application...')
 
   return (
@@ -70,20 +97,7 @@ const App = () => {
         Bad
       </button>
 
-      <h2>Statistics</h2>
-      <p>
-        Good: {good}
-        <br />
-        Neutral: {neutral}
-        <br />
-        Bad: {bad}
-        <br />
-        All: {calculateAll()}
-        <br />
-        Average: {calculateAverage()}
-        <br />
-        Positive: {calculatePositive()} %
-      </p>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </>
   )
 
