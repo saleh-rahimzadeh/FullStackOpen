@@ -6,7 +6,7 @@ import Total  from './Total';
 
 
 const Course = ({ course }) => {
-	console.log('Rendering Course...')
+	console.log('Rendering Course...', course.id)
 
 	return (
 		<>
