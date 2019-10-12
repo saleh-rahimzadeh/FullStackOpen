@@ -28,6 +28,11 @@ const App = () => {
         name: 'Test message',
         exercises: 1,
         id: 4
+      },
+      {
+        name: 'Node.js',
+        exercises: 15,
+        id: 5
       }
     ]
   }

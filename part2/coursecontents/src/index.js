@@ -12,7 +12,7 @@ import App      from './App'
 
 
 
-console.log('Part2: 1')
+console.log('Part2: 2')
 console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
 
