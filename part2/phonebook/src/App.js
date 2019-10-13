@@ -1,14 +1,7 @@
-import React, { useState }  from 'react';
-
-
-
-const Person = ({ Name, Number }) => {
-	return (
-		<div>
-			{Name} : {Number}
-		</div>
-	)
-}
+import React, { useState } from 'react';
+import PersonForm          from './components/PersonForm'
+import Filter              from './components/Filter'
+import Persons             from './components/Persons'
 
 
 
@@ -55,15 +48,12 @@ const App = () => {
 		setPersons(persons.concat(createNewObject(newName, newNumber)))
 		setNewName('')
 		setNewNumber('')
+		setSearch('')
 	}
 
 	const search_onChange = (event) => {
 		setSearch(event.target.value)
 	}
-
-
-	/* Data */
-	const Persons = () => persons.filter(person => search === '' ? true : person.name.toUpperCase().includes(search.toUpperCase())).map(person => <Person key={person.name} Name={person.name} Number={person.number} />)
   
 
   /* Rendering Components */
@@ -72,25 +62,13 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
-      <div>
-				filter shown with <input value={search} onChange={search_onChange} />
-      </div>
+      <Filter search={search} searchEventHandler={search_onChange} />
 
-      <h2>Add a new</h2>
-      <form onSubmit={addName_onSubmit}>
-        <div>
-          Name: <input value={newName} onChange={newName_onChange} />
-        </div>
-        <div>
-          Number: <input value={newNumber} onChange={newNumber_onChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <h3>Add a new</h3>
+      <PersonForm newName={newName} newNumber={newNumber} addNameEventHandler={addName_onSubmit} newNameEventHandler={newName_onChange} newNumberEventHandler={newNumber_onChange} />
 
-      <h2>Numbers</h2>
-      {Persons()}
+      <h3>Numbers</h3>
+      <Persons persons={persons} search={search} />
     </>
   )
 
