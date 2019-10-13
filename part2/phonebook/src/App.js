@@ -2,10 +2,10 @@ import React, { useState }  from 'react';
 
 
 
-const Person = ({ Name }) => {
+const Person = ({ Name, Number }) => {
 	return (
 		<div>
-			{Name}
+			{Name} : {Number}
 		</div>
 	)
 }
@@ -15,23 +15,29 @@ const Person = ({ Name }) => {
 const App = () => {
 
 	/* Util Functions */
-	const createNewObject = (newName) => {
+	const createNewObject = (newName, newNumber) => {
 		return {
-			name: newName
+			name: newName,
+			number: newNumber
 		}
 	}
 
 
 	/* Defining States */
-	const [ persons, setPersons ] = useState([
-		createNewObject('Arto Hellas')
+	const [ persons, setPersons ]     = useState([
+		createNewObject('Arto Hellas', '040-1234567')
 	]) 
-	const [ newName, setNewName ] = useState('')
+	const [ newName, setNewName ]     = useState('')
+	const [ newNumber, setNewNumber ] = useState('')
 
 
 	/* Defining Event Handlers */
 	const newName_onChange = (event) => {
 		setNewName(event.target.value)
+	}
+
+	const newNumber_onChange = (event) => {
+		setNewNumber(event.target.value)
 	}
 
 	const addName_onSubmit = (event) => {
@@ -42,13 +48,14 @@ const App = () => {
 			return
 		}
 
-		setPersons(persons.concat(createNewObject(newName)))
+		setPersons(persons.concat(createNewObject(newName, newNumber)))
 		setNewName('')
+		setNewNumber('')
 	}
 
 
 	/* Data */
-	const Persons = () => persons.map(person => <Person key={person.name} Name={person.name} />)
+	const Persons = () => persons.map(person => <Person key={person.name} Name={person.name} Number={person.number} />)
   
 
   /* Rendering Components */
@@ -60,6 +67,9 @@ const App = () => {
       <form onSubmit={addName_onSubmit}>
         <div>
           Name: <input value={newName} onChange={newName_onChange} />
+        </div>
+        <div>
+          Number: <input value={newNumber} onChange={newNumber_onChange} />
         </div>
         <div>
           <button type="submit">add</button>
