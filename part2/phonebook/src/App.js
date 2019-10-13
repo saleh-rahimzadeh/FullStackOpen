@@ -25,10 +25,14 @@ const App = () => {
 
 	/* Defining States */
 	const [ persons, setPersons ]     = useState([
-		createNewObject('Arto Hellas', '040-1234567')
+		createNewObject('Arto Hellas', '040-1234567'),
+		createNewObject('Ada Lovelace', '39-44-5323523'),
+		createNewObject('Dan Abramov', '12-43-234345'),
+		createNewObject('Mary Poppendieck', '39-23-6423122')
 	]) 
-	const [ newName, setNewName ]     = useState('')
+	const [ newName,   setNewName ]   = useState('')
 	const [ newNumber, setNewNumber ] = useState('')
+	const [ search,    setSearch ]    = useState('')
 
 
 	/* Defining Event Handlers */
@@ -53,9 +57,13 @@ const App = () => {
 		setNewNumber('')
 	}
 
+	const search_onChange = (event) => {
+		setSearch(event.target.value)
+	}
+
 
 	/* Data */
-	const Persons = () => persons.map(person => <Person key={person.name} Name={person.name} Number={person.number} />)
+	const Persons = () => persons.filter(person => search === '' ? true : person.name.toUpperCase().includes(search.toUpperCase())).map(person => <Person key={person.name} Name={person.name} Number={person.number} />)
   
 
   /* Rendering Components */
@@ -64,6 +72,11 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <div>
+				filter shown with <input value={search} onChange={search_onChange} />
+      </div>
+
+      <h2>Add a new</h2>
       <form onSubmit={addName_onSubmit}>
         <div>
           Name: <input value={newName} onChange={newName_onChange} />
@@ -75,6 +88,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
+
       <h2>Numbers</h2>
       {Persons()}
     </>
