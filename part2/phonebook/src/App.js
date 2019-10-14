@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import PersonForm          from './components/PersonForm'
-import Filter              from './components/Filter'
-import Persons             from './components/Persons'
+import React, { useState, useEffect } from 'react';
+import axios                          from 'axios'
+import PersonForm                     from './components/PersonForm'
+import Filter                         from './components/Filter'
+import Persons                        from './components/Persons'
 
 
 
@@ -17,15 +18,20 @@ const App = () => {
 
 
 	/* Defining States */
-	const [ persons, setPersons ]     = useState([
-		createNewObject('Arto Hellas', '040-1234567'),
-		createNewObject('Ada Lovelace', '39-44-5323523'),
-		createNewObject('Dan Abramov', '12-43-234345'),
-		createNewObject('Mary Poppendieck', '39-23-6423122')
-	]) 
+	const [ persons, setPersons ]     = useState([]) 
 	const [ newName,   setNewName ]   = useState('')
 	const [ newNumber, setNewNumber ] = useState('')
 	const [ search,    setSearch ]    = useState('')
+
+
+	/* Using Effect */
+	useEffect(() => {
+		axios
+			.get('http://localhost:3001/persons')
+			.then(response => {
+				setPersons(response.data)
+			})
+	}, [])
 
 
 	/* Defining Event Handlers */
