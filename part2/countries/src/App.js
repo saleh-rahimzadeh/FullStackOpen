@@ -17,6 +17,10 @@ const App = () => {
 		setSearch(event.target.value)
 	}
 
+	const country_onClick = (countryName) => {
+		setSearch(countryName)
+	}
+
 	useEffect(() => {
 		axios
 			.get('https://restcountries.eu/rest/v2/all')
@@ -32,7 +36,7 @@ const App = () => {
 	return (
 		<>
 			<Search keyword={search} searchEventHandler={search_onChange} />
-			<Content search={search} countries={countries} />
+			<Content search={search} countries={countries} countryEventHandler={country_onClick} />
 		</>
 	)
 

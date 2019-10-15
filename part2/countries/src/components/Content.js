@@ -4,7 +4,7 @@ import CountriesList from './CountriesList'
 
 
 
-const Content = ({ search, countries }) => {
+const Content = ({ search, countries, countryEventHandler }) => {
 	console.log('Rendering Content...')
   
 
@@ -34,7 +34,7 @@ const Content = ({ search, countries }) => {
         )
     } else if (foundCountries.length > 1 && foundCountries.length <= 10) {
         return (
-            <CountriesList countries={foundCountries} />
+            <CountriesList countries={foundCountries} countryEventHandler={countryEventHandler} />
         )
     } else if (foundCountries.length > 10) {
         return (
