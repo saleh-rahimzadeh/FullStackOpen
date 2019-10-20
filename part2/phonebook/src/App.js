@@ -49,23 +49,46 @@ const App = () => {
 	const addName_onSubmit = (event) => {
 		event.preventDefault()
 
-		if (persons.map(person => person.name).includes(newName)) {
-			alert(`${newName} is already added to phonebook`)
+		const thatPerson = persons.find(person => person.name === newName)
+
+		if (thatPerson === undefined) {
+			PersonsService
+				.create(createNewObject(newName, newNumber))
+				.then(personData => {
+					console.log('Person created', personData)
+					setPersons(persons.concat(personData))
+					setNewName('')
+					setNewNumber('')
+					setSearch('')
+				})
+				.catch(error => {
+					alert("Error: Can't add a new person")
+				})
 			return
 		}
 
-		PersonsService
-			.create(createNewObject(newName, newNumber))
-			.then(personData => {
-				console.log('Person created', personData)
-				setPersons(persons.concat(personData))
-				setNewName('')
-				setNewNumber('')
-				setSearch('')
-			})
-			.catch(error => {
-				alert("Error: Can't add a new person")
-			})
+		if (thatPerson.number === newNumber) {
+			alert(`${newName} is already added to phonebook`)
+		} else {
+			if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+				const updatedPerson = { 
+					...thatPerson, 
+					number: newNumber
+				}
+
+				PersonsService
+					.update(updatedPerson)
+					.then(personData => {
+						setPersons(persons.map(personItem => personItem.id !== personData.id ? personItem : personData))
+						setNewName('')
+						setNewNumber('')
+						setSearch('')
+					})
+					.catch(error => {
+						alert("Error: Can't update the person")
+					})
+			}
+		}
 	}
 
 	const search_onChange = (event) => {

@@ -20,10 +20,16 @@ const erase = (id) => {
 	return request.then(response => response.status)
 }
 
+const update = (person) => {
+	const request = axios.put(`${baseUrl}/${person.id}`, person)
+	return request.then(response => response.data)
+}
+
 
 
 export default { 
 		  getAll, 
 		  create,
-		  erase
+		  erase,
+		  update
 		}
