@@ -51,10 +51,14 @@ const App = () => {
 			return
 		}
 
-		setPersons(persons.concat(createNewObject(newName, newNumber)))
-		setNewName('')
-		setNewNumber('')
-		setSearch('')
+		axios
+			.post('http://localhost:3001/persons', createNewObject(newName, newNumber))
+			.then(response => {
+				setPersons(persons.concat(response.data))
+				setNewName('')
+				setNewNumber('')
+				setSearch('')
+			})
 	}
 
 	const search_onChange = (event) => {
@@ -62,21 +66,21 @@ const App = () => {
 	}
   
 
-  /* Rendering Components */
-  console.log('Rendering Application...')
+	/* Rendering Components */
+	console.log('Rendering Application...')
 
-  return (
-    <>
-      <h2>Phonebook</h2>
-      <Filter search={search} searchEventHandler={search_onChange} />
+	return (
+		<>
+			<h2>Phonebook</h2>
+			<Filter search={search} searchEventHandler={search_onChange} />
 
-      <h3>Add a new</h3>
-      <PersonForm newName={newName} newNumber={newNumber} addNameEventHandler={addName_onSubmit} newNameEventHandler={newName_onChange} newNumberEventHandler={newNumber_onChange} />
+			<h3>Add a new</h3>
+			<PersonForm newName={newName} newNumber={newNumber} addNameEventHandler={addName_onSubmit} newNameEventHandler={newName_onChange} newNumberEventHandler={newNumber_onChange} />
 
-      <h3>Numbers</h3>
-      <Persons persons={persons} search={search} />
-    </>
-  )
+			<h3>Numbers</h3>
+			<Persons persons={persons} search={search} />
+		</>
+	)
 
 }
 
