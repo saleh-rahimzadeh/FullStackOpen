@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios                          from 'axios'
 import PersonForm                     from './components/PersonForm'
 import Filter                         from './components/Filter'
 import Persons                        from './components/Persons'
+import PersonsService                 from './services/Persons'
 
 
 
@@ -26,10 +26,13 @@ const App = () => {
 
 	/* Using Effect */
 	useEffect(() => {
-		axios
-			.get('http://localhost:3001/persons')
-			.then(response => {
-				setPersons(response.data)
+		PersonsService
+			.getAll()
+			.then(personsData => {
+				setPersons(personsData)
+			})
+			.catch(error => {
+				alert("Error: Can't get persons")
 			})
 	}, [])
 
@@ -51,13 +54,16 @@ const App = () => {
 			return
 		}
 
-		axios
-			.post('http://localhost:3001/persons', createNewObject(newName, newNumber))
-			.then(response => {
-				setPersons(persons.concat(response.data))
+		PersonsService
+			.create(createNewObject(newName, newNumber))
+			.then(personData => {
+				setPersons(persons.concat(personData))
 				setNewName('')
 				setNewNumber('')
 				setSearch('')
+			})
+			.catch(error => {
+				alert("Error: Can't add a new")
 			})
 	}
 
