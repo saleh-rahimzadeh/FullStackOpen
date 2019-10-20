@@ -57,18 +57,33 @@ const App = () => {
 		PersonsService
 			.create(createNewObject(newName, newNumber))
 			.then(personData => {
+				console.log('Person created', personData)
 				setPersons(persons.concat(personData))
 				setNewName('')
 				setNewNumber('')
 				setSearch('')
 			})
 			.catch(error => {
-				alert("Error: Can't add a new")
+				alert("Error: Can't add a new person")
 			})
 	}
 
 	const search_onChange = (event) => {
 		setSearch(event.target.value)
+	}
+
+	const delete_onClick = (person) => {
+		if (window.confirm(`Delete ${person.name} ?`)) { 
+			PersonsService
+			.erase(person.id)
+			.then(status => {
+				console.log('Person deleted', person)
+				setPersons(persons.filter(personItem => personItem.id !== person.id))
+			})
+			.catch(error => {
+				alert("Error: Can't delete person")
+			})
+		}
 	}
   
 
@@ -84,7 +99,7 @@ const App = () => {
 			<PersonForm newName={newName} newNumber={newNumber} addNameEventHandler={addName_onSubmit} newNameEventHandler={newName_onChange} newNumberEventHandler={newNumber_onChange} />
 
 			<h3>Numbers</h3>
-			<Persons persons={persons} search={search} />
+			<Persons persons={persons} search={search} deleteEventHandler={delete_onClick} />
 		</>
 	)
 
