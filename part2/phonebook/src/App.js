@@ -17,6 +17,21 @@ const App = () => {
 		}
 	}
 
+	const arrangeNotification = (message, isError = false) => {
+		setNotification({ message, isError })
+		setTimeout(() => { setNotification(null) }, 5000)
+	}
+
+	const resetStates = () => {
+		setNewName('')
+		setNewNumber('')
+		setSearch('')
+	}
+
+	const excludePerson = (id) => {
+		setPersons(persons.filter(personItem => personItem.id !== id))
+	}
+
 
 	/* Defining States */
 	const [ persons, setPersons ]           = useState([]) 
@@ -34,7 +49,7 @@ const App = () => {
 				setPersons(personsData)
 			})
 			.catch(error => {
-				alert("Error: Can't get persons")
+				arrangeNotification("Error: Can't get persons", true)
 			})
 	}, [])
 
@@ -57,16 +72,13 @@ const App = () => {
 			PersonsService
 				.create(createNewObject(newName, newNumber))
 				.then(personData => {
-					console.log('Person created', personData)
 					setPersons(persons.concat(personData))
-					setNotification({ message: `Added ${personData.name}` })
-					setTimeout(() => { setNotification(null) }, 3000)
-					setNewName('')
-					setNewNumber('')
-					setSearch('')
+					console.log('Person created', personData)
+					arrangeNotification(`Added ${personData.name}`)
+					resetStates()
 				})
 				.catch(error => {
-					alert("Error: Can't add a new person")
+					arrangeNotification("Error: Can't add a new person", true)
 				})
 			return
 		}
@@ -83,16 +95,13 @@ const App = () => {
 				PersonsService
 					.update(updatedPerson)
 					.then(personData => {
-						console.log('Person changed', personData)
 						setPersons(persons.map(personItem => personItem.id !== personData.id ? personItem : personData))
-						setNotification({ message: `Changed ${personData.name}` })
-						setTimeout(() => { setNotification(null) }, 3000)
-						setNewName('')
-						setNewNumber('')
-						setSearch('')
+						console.log('Person changed', personData)
+						arrangeNotification(`Changed ${personData.name}`)
+						resetStates()
 					})
 					.catch(error => {
-						alert("Error: Can't update the person")
+						arrangeNotification("Error: Can't update the person", true)
 					})
 			}
 		}
@@ -107,11 +116,13 @@ const App = () => {
 			PersonsService
 			.erase(person.id)
 			.then(status => {
+				excludePerson(person.id)
 				console.log('Person deleted', person)
-				setPersons(persons.filter(personItem => personItem.id !== person.id))
+				arrangeNotification(`Deleted ${person.name}`)
 			})
 			.catch(error => {
-				alert("Error: Can't delete person")
+				excludePerson(person.id)
+				arrangeNotification(`Information of ${person.name} has already been removed from server.`, true)
 			})
 		}
 	}

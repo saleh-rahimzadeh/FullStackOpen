@@ -8,7 +8,7 @@ const Notification = ({ notice }) => {
 	}
 
 	return (
-		<p className="success">
+		<p className={notice.isError === true ? 'error' : 'success'}>
 			{notice.message}
 		</p>
 	)
