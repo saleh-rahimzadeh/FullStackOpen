@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PersonForm                     from './components/PersonForm'
 import Filter                         from './components/Filter'
 import Persons                        from './components/Persons'
+import Notification                   from './components/Notification'
 import PersonsService                 from './services/Persons'
 
 
@@ -18,10 +19,11 @@ const App = () => {
 
 
 	/* Defining States */
-	const [ persons, setPersons ]     = useState([]) 
-	const [ newName,   setNewName ]   = useState('')
-	const [ newNumber, setNewNumber ] = useState('')
-	const [ search,    setSearch ]    = useState('')
+	const [ persons, setPersons ]           = useState([]) 
+	const [ newName,   setNewName ]         = useState('')
+	const [ newNumber, setNewNumber ]       = useState('')
+	const [ search,    setSearch ]          = useState('')
+	const [ notification, setNotification ] = useState(null)
 
 
 	/* Using Effect */
@@ -57,6 +59,8 @@ const App = () => {
 				.then(personData => {
 					console.log('Person created', personData)
 					setPersons(persons.concat(personData))
+					setNotification({ message: `Added ${personData.name}` })
+					setTimeout(() => { setNotification(null) }, 3000)
 					setNewName('')
 					setNewNumber('')
 					setSearch('')
@@ -79,7 +83,10 @@ const App = () => {
 				PersonsService
 					.update(updatedPerson)
 					.then(personData => {
+						console.log('Person changed', personData)
 						setPersons(persons.map(personItem => personItem.id !== personData.id ? personItem : personData))
+						setNotification({ message: `Changed ${personData.name}` })
+						setTimeout(() => { setNotification(null) }, 3000)
 						setNewName('')
 						setNewNumber('')
 						setSearch('')
@@ -115,7 +122,10 @@ const App = () => {
 
 	return (
 		<>
-			<h2>Phonebook</h2>
+			<h1>Phonebook</h1>
+
+			<Notification notice={notification} />
+
 			<Filter search={search} searchEventHandler={search_onChange} />
 
 			<h3>Add a new</h3>
