@@ -8,8 +8,14 @@ const morgan     = require('morgan')
 ------------------------------------------------------------------------------- */
 
 const app = express()
-app.use(morgan('tiny'))
+
 app.use(bodyParser.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
+
+morgan.token('post-data', function (request) { 
+  return request.method === 'POST' ? JSON.stringify(request.body) : ' ' 
+})
+
 app.listen(3001, () => {
   console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
   console.log(`http://localhost:3001${API_URL}`)
