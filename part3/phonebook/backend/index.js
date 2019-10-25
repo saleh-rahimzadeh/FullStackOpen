@@ -46,13 +46,31 @@ let people = [
 
 
 
+/* Utils
+------------------------------------------------------------------------------- */
+
+/**
+ * Fetch ID from request's parameters
+ */
+const getID = (request) => {
+  return Number(request.params.id)
+}
+
+
+
 /* Routes
 ------------------------------------------------------------------------------- */
 
+/**
+ * Home page
+ */
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to Phonebook</h1>')
 })
 
+/**
+ * info page
+ */
 app.get('/info', (request, response) => {
   const info = `
     <p>Phonebook has info for ${people.length} people</p>
@@ -61,12 +79,18 @@ app.get('/info', (request, response) => {
   response.send(info)
 })
 
+/**
+ * Get all persons
+ */
 app.get(API_URL, (request, response) => {
   response.json(people)
 })
 
+/**
+ * Get a single person
+ */
 app.get(API_ID_URL, (request, response) => {
-  const id = Number(request.params.id)
+  const id = getID(request)
   const person = people.find(person => person.id === id)
   
   if (person) {
@@ -74,4 +98,14 @@ app.get(API_ID_URL, (request, response) => {
   } else {
     response.status(404).end()
   }
+})
+
+/**
+ * Delete a person
+ */
+app.delete(API_ID_URL, (request, response) => {
+  const id = getID(request)
+  people = people.filter(person => person.id !== id)
+
+  response.status(204).end()
 })
