@@ -1,5 +1,6 @@
-const express = require('express')
+const express    = require('express')
 const bodyParser = require('body-parser')
+const morgan     = require('morgan')
 
 
 
@@ -7,6 +8,7 @@ const bodyParser = require('body-parser')
 ------------------------------------------------------------------------------- */
 
 const app = express()
+app.use(morgan('tiny'))
 app.use(bodyParser.json())
 app.listen(3001, () => {
   console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
