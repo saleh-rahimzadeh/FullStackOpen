@@ -56,6 +56,13 @@ const getID = (request) => {
   return Number(request.params.id)
 }
 
+/**
+ * Generate a random ID
+ */
+const generateId = () => {
+  return Math.floor(Math.random() * 999);
+}
+
 
 
 /* Routes
@@ -108,4 +115,15 @@ app.delete(API_ID_URL, (request, response) => {
   people = people.filter(person => person.id !== id)
 
   response.status(204).end()
+})
+
+/**
+ * Add a new person
+ */
+app.post(API_URL, (request, response) => {
+  const person = request.body
+  person.id = generateId()
+  people = people.concat(person)
+
+  response.json(person)
 })
