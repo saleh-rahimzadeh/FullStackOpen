@@ -19,8 +19,9 @@ app.listen(3001, () => {
 ------------------------------------------------------------------------------- */
 
 const API_URL = '/api/persons'
+const API_ID_URL = API_URL + '/:id'
 
-let persons = [
+let people = [
   {
     "name": "Arto Hellas",
     "number": "040-123456",
@@ -54,12 +55,23 @@ app.get('/', (req, res) => {
 
 app.get('/info', (request, response) => {
   const info = `
-    <p>Phonebook has info for ${persons.length} people</p>
+    <p>Phonebook has info for ${people.length} people</p>
     <p>${(new Date()).toString()}</p>
   `
   response.send(info)
 })
 
 app.get(API_URL, (request, response) => {
-  response.json(persons)
+  response.json(people)
+})
+
+app.get(API_ID_URL, (request, response) => {
+  const id = Number(request.params.id)
+  const person = people.find(person => person.id === id)
+  
+  if (person) {
+    response.json(person)
+  } else {
+    response.status(404).end()
+  }
 })
