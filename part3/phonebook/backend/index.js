@@ -59,8 +59,17 @@ const getID = (request) => {
 /**
  * Generate a random ID
  */
-const generateId = () => {
+const generateID = () => {
   return Math.floor(Math.random() * 999);
+}
+
+/**
+ * Creeating an error response and send it
+ */
+const createErrorResponse = (response, message) => {
+  return response.status(400).json({ 
+      error: message
+  })
 }
 
 
@@ -121,8 +130,26 @@ app.delete(API_ID_URL, (request, response) => {
  * Add a new person
  */
 app.post(API_URL, (request, response) => {
-  const person = request.body
-  person.id = generateId()
+  const body = request.body
+
+  if (!body.name) {
+    return createErrorResponse(response, 'Name missing')
+  }
+
+  if (!body.number) {
+    return createErrorResponse(response, 'Number missing')
+  }
+
+  if (people.find(person => person.name === body.name)) {
+    return createErrorResponse(response, 'Name must be unique')
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateID()
+  }
+
   people = people.concat(person)
 
   response.json(person)
