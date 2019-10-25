@@ -1,0 +1,12 @@
+{
+  "name": "phonebook",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
