@@ -1,5 +1,5 @@
 {
-  "name": "phonebook",
+  "name": "phonebook_backend",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
@@ -7,6 +7,8 @@
     "watch": "nodemon"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "morgan": "^1.9.1"
   }
 }

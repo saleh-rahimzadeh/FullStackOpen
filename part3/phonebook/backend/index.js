@@ -1,6 +1,7 @@
 const express    = require('express')
 const bodyParser = require('body-parser')
 const morgan     = require('morgan')
+const cors       = require('cors')
 
 
 
@@ -9,25 +10,50 @@ const morgan     = require('morgan')
 
 const app = express()
 
+// Consts
+const API_URL = '/api/persons'
+const API_ID_URL = API_URL + '/:id'
+const PORT = process.env.PORT || 3001
+
+// Pre Middlewares
+app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
+
+// Routes
+app.get('/', pageHome)
+app.get('/info', pageInfo)
+app.get(API_URL, apiGetAll)
+app.get(API_ID_URL, apiGet)
+app.delete(API_ID_URL, apiDelete)
+app.post(API_URL, apiAdd)
+
+// Post Middlewares
+app.use(unknownEndpoint)
+
+// Running application
+app.listen(PORT, () => {
+  console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
+  console.log(`URL: http://localhost:${PORT}${API_URL}`)
+})
+
+
+
+/* Middlewares
+------------------------------------------------------------------------------- */
 
 morgan.token('post-data', function (request) { 
   return request.method === 'POST' ? JSON.stringify(request.body) : ' ' 
 })
 
-app.listen(3001, () => {
-  console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
-  console.log(`http://localhost:3001${API_URL}`)
-})
+function unknownEndpoint(request, response) {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
 
 
 /* Data Definition
 ------------------------------------------------------------------------------- */
-
-const API_URL = '/api/persons'
-const API_ID_URL = API_URL + '/:id'
 
 let people = [
   {
@@ -60,7 +86,7 @@ let people = [
 /**
  * Fetch ID from request's parameters
  */
-const getID = (request) => {
+const fetchID = (request) => {
   return Number(request.params.id)
 }
 
@@ -88,33 +114,33 @@ const createErrorResponse = (response, message) => {
 /**
  * Home page
  */
-app.get('/', (req, res) => {
-  res.send('<h1>Welcome to Phonebook</h1>')
-})
+function pageHome(request, response) {
+  response.send('<h1>Welcome to Phonebook</h1>')
+}
 
 /**
- * info page
+ * Info page
  */
-app.get('/info', (request, response) => {
+function pageInfo(request, response) {
   const info = `
     <p>Phonebook has info for ${people.length} people</p>
     <p>${(new Date()).toString()}</p>
   `
   response.send(info)
-})
+}
 
 /**
  * Get all persons
  */
-app.get(API_URL, (request, response) => {
+function apiGetAll(request, response) {
   response.json(people)
-})
+}
 
 /**
  * Get a single person
  */
-app.get(API_ID_URL, (request, response) => {
-  const id = getID(request)
+function apiGet(request, response) {
+  const id = fetchID(request)
   const person = people.find(person => person.id === id)
   
   if (person) {
@@ -122,22 +148,22 @@ app.get(API_ID_URL, (request, response) => {
   } else {
     response.status(404).end()
   }
-})
+}
 
 /**
  * Delete a person
  */
-app.delete(API_ID_URL, (request, response) => {
-  const id = getID(request)
+function apiDelete(request, response) {
+  const id = fetchID(request)
   people = people.filter(person => person.id !== id)
 
   response.status(204).end()
-})
+}
 
 /**
  * Add a new person
  */
-app.post(API_URL, (request, response) => {
+function apiAdd(request, response) {
   const body = request.body
 
   if (!body.name) {
@@ -161,4 +187,4 @@ app.post(API_URL, (request, response) => {
   people = people.concat(person)
 
   response.json(person)
-})
+}
