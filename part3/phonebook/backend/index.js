@@ -1,3 +1,4 @@
+const dotenv     = require('dotenv')
 const express    = require('express')
 const bodyParser = require('body-parser')
 const morgan     = require('morgan')
@@ -10,16 +11,20 @@ const cors       = require('cors')
 
 const app = express()
 
-// Consts
-const API_URL = '/api/persons'
-const API_ID_URL = API_URL + '/:id'
-const PORT = process.env.PORT || 3001
-
 // Pre Middlewares
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
 app.use(express.static('build'))
+dotenv.config()
+
+// Data Models
+const Person = require('./models/Person')()
+
+// Consts
+const API_URL = '/api/persons'
+const API_ID_URL = API_URL + '/:id'
+const PORT = process.env.PORT
 
 // Routes
 app.get('/', pageHome)
@@ -53,34 +58,6 @@ function unknownEndpoint(request, response) {
 
 
 
-/* Data Definition
-------------------------------------------------------------------------------- */
-
-let people = [
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-  },
-  {
-    "name": "Dan Abramov",
-    "number": "12-43-234345",
-    "id": 3
-  },
-  {
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-  }
-]
-
-
-
 /* Utils
 ------------------------------------------------------------------------------- */
 
@@ -88,7 +65,7 @@ let people = [
  * Fetch ID from request's parameters
  */
 const fetchID = (request) => {
-  return Number(request.params.id)
+  return request.params.id
 }
 
 /**
@@ -123,18 +100,26 @@ function pageHome(request, response) {
  * Info page
  */
 function pageInfo(request, response) {
-  const info = `
-    <p>Phonebook has info for ${people.length} people</p>
-    <p>${(new Date()).toString()}</p>
-  `
-  response.send(info)
+  Person
+    .find({})
+    .then(people => {
+      const info = `
+        <p>Phonebook has info for ${people.length} people</p>
+        <p>${(new Date()).toString()}</p>
+      `
+      response.send(info)
+    })
 }
 
 /**
  * Get all persons
  */
 function apiGetAll(request, response) {
-  response.json(people)
+  Person
+    .find({})
+    .then(people => {
+      response.json(people.map(person => person.toJSON()))
+    })
 }
 
 /**
@@ -142,13 +127,9 @@ function apiGetAll(request, response) {
  */
 function apiGet(request, response) {
   const id = fetchID(request)
-  const person = people.find(person => person.id === id)
-  
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Person.findById(id).then(person => {
+    response.json(person.toJSON())
+  })
 }
 
 /**
