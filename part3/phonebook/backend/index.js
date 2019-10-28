@@ -69,13 +69,6 @@ const fetchID = (request) => {
 }
 
 /**
- * Generate a random ID
- */
-const generateID = () => {
-  return Math.floor(Math.random() * 999);
-}
-
-/**
  * Creeating an error response and send it
  */
 const createErrorResponse = (response, message) => {
@@ -136,9 +129,7 @@ function apiGet(request, response) {
  * Delete a person
  */
 function apiDelete(request, response) {
-  const id = fetchID(request)
-  people = people.filter(person => person.id !== id)
-
+  // TODO: implement
   response.status(204).end()
 }
 
@@ -154,19 +145,16 @@ function apiAdd(request, response) {
 
   if (!body.number) {
     return createErrorResponse(response, 'Number missing')
-  }
+  }  
 
-  if (people.find(person => person.name === body.name)) {
-    return createErrorResponse(response, 'Name must be unique')
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateID()
-  }
+    number: body.number
+  })
 
-  people = people.concat(person)
-
-  response.json(person)
+  person
+    .save()
+    .then(result => {
+      response.json(person.toJSON())
+    })
 }
