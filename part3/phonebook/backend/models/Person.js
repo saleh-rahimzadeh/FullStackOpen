@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 
 
 
+mongoose.set('useFindAndModify', false)
+
+
 function Connect() {
 	const url = process.env.MONGODB_URI
 

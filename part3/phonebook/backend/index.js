@@ -12,10 +12,10 @@ const cors       = require('cors')
 const app = express()
 
 // Pre Middlewares
+app.use(express.static('build'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
-app.use(express.static('build'))
 dotenv.config()
 
 // Data Models
@@ -119,18 +119,22 @@ function apiGetAll(request, response) {
  * Get a single person
  */
 function apiGet(request, response) {
-  const id = fetchID(request)
-  Person.findById(id).then(person => {
-    response.json(person.toJSON())
-  })
+  Person
+    .findById(fetchID(request))
+    .then(person => {
+      response.json(person.toJSON())
+    })
 }
 
 /**
  * Delete a person
  */
 function apiDelete(request, response) {
-  // TODO: implement
-  response.status(204).end()
+  Person
+    .findByIdAndRemove(fetchID(request))
+    .then(result => {
+      response.status(204).end()
+    })
 }
 
 /**
