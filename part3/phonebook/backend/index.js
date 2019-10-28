@@ -36,6 +36,7 @@ app.post(API_URL, apiAdd)
 
 // Post Middlewares
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 // Running application
 app.listen(PORT, () => {
@@ -48,12 +49,31 @@ app.listen(PORT, () => {
 /* Middlewares
 ------------------------------------------------------------------------------- */
 
+/**
+ * Adding 'post-data' token to MORGAN
+ */
 morgan.token('post-data', function (request) { 
   return request.method === 'POST' ? JSON.stringify(request.body) : ' ' 
 })
 
+/**
+ * Handling unknown endpoint
+ */
 function unknownEndpoint(request, response) {
-  response.status(404).send({ error: 'unknown endpoint' })
+  makeResponse(response, 404, 'send', 'unknown endpoint')
+}
+
+/**
+ * Handling errors
+ */
+function errorHandler(error, request, response, next) {
+  console.error("ERROR:", error.message)
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return makeResponse(response, 400, 'send', 'malformatted id')
+  }
+
+  next(error)
 }
 
 
@@ -69,12 +89,22 @@ const fetchID = (request) => {
 }
 
 /**
- * Creeating an error response and send it
+ * Making a response and send it
  */
-const createErrorResponse = (response, message) => {
-  return response.status(400).json({ 
-      error: message
-  })
+const makeResponse = (response, errorCode, type, message) => {
+  if (type === undefined) {
+    return response.status(errorCode).end()
+  }
+  if (type === 'json') {
+    return response.status(errorCode).json({ 
+        error: message
+    })
+  }
+  if (type === 'send') {
+    return response.status(errorCode).send({ 
+        error: message
+    })
+  }
 }
 
 
@@ -118,23 +148,33 @@ function apiGetAll(request, response) {
 /**
  * Get a single person
  */
-function apiGet(request, response) {
+function apiGet(request, response, next) {
   Person
     .findById(fetchID(request))
     .then(person => {
-      response.json(person.toJSON())
+      if (person) {
+        response.json(person.toJSON())
+      } else {
+        makeResponse(response, 404)
+      }
     })
+    .catch(error => next(error))
 }
 
 /**
  * Delete a person
  */
-function apiDelete(request, response) {
+function apiDelete(request, response, next) {
   Person
     .findByIdAndRemove(fetchID(request))
     .then(result => {
-      response.status(204).end()
+      if (result) {
+        makeResponse(response, 204)
+      } else {
+        makeResponse(response, 404)
+      }
     })
+    .catch(error => next(error))
 }
 
 /**
@@ -144,11 +184,11 @@ function apiAdd(request, response) {
   const body = request.body
 
   if (!body.name) {
-    return createErrorResponse(response, 'Name missing')
+    return makeResponse(response, 400, 'json', 'Name missing')
   }
 
   if (!body.number) {
-    return createErrorResponse(response, 'Number missing')
+    return makeResponse(response, 400, 'json', 'Number missing')
   }  
 
   const person = new Person({
