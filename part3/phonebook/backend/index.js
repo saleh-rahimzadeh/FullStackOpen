@@ -33,6 +33,7 @@ app.get(API_URL, apiGetAll)
 app.get(API_ID_URL, apiGet)
 app.delete(API_ID_URL, apiDelete)
 app.post(API_URL, apiAdd)
+app.put(API_ID_URL, apiUpdat)
 
 // Post Middlewares
 app.use(unknownEndpoint)
@@ -180,7 +181,7 @@ function apiDelete(request, response, next) {
 /**
  * Add a new person
  */
-function apiAdd(request, response) {
+function apiAdd(request, response, next) {
   const body = request.body
 
   if (!body.name) {
@@ -201,4 +202,24 @@ function apiAdd(request, response) {
     .then(result => {
       response.json(person.toJSON())
     })
+    .catch(error => next(error))
+}
+
+/**
+ * Update a person
+ */
+function apiUpdat(request, response, next) {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(fetchID(request), person, {new: true})
+    .then(updatedPerson => {
+      response.json(updatedPerson.toJSON())
+    })
+    .catch(error => next(error))
 }
