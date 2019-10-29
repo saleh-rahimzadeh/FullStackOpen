@@ -21,28 +21,31 @@ dotenv.config()
 // Data Models
 const Person = require('./models/Person')()
 
-// Consts
-const API_URL = '/api/persons'
-const API_ID_URL = API_URL + '/:id'
-const PORT = process.env.PORT
+// URI Consts
+const PAGE_URI = '/'
+const PAGE_INFO_URI = PAGE_URI + 'info'
+const API_URI = '/api/persons'
+const API_ID_URI = API_URI + '/:id'
 
-// Routes
-app.get('/', pageHome)
-app.get('/info', pageInfo)
-app.get(API_URL, apiGetAll)
-app.get(API_ID_URL, apiGet)
-app.delete(API_ID_URL, apiDelete)
-app.post(API_URL, apiAdd)
-app.put(API_ID_URL, apiUpdat)
+// Page Routes
+app.get(PAGE_URI, pageHome)
+app.get(PAGE_INFO_URI, pageInfo)
+
+// API Routes
+app.get(API_URI, apiGetAll)
+app.get(API_ID_URI, apiGet)
+app.delete(API_ID_URI, apiDelete)
+app.post(API_URI, apiAdd)
+app.put(API_ID_URI, apiUpdat)
 
 // Post Middlewares
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
 // Running application
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
-  console.log(`URL: http://localhost:${PORT}${API_URL}`)
+  console.log(`URL: http://localhost:${process.env.PORT}${API_URI}`)
 })
 
 
@@ -110,7 +113,9 @@ const makeResponse = (response, errorCode, type, message) => {
 
 
 
-/* Routes
+
+
+/* Page Routes
 ------------------------------------------------------------------------------- */
 
 /**
@@ -124,16 +129,19 @@ function pageHome(request, response) {
  * Info page
  */
 function pageInfo(request, response) {
-  Person
-    .find({})
-    .then(people => {
-      const info = `
-        <p>Phonebook has info for ${people.length} people</p>
-        <p>${(new Date()).toString()}</p>
-      `
-      response.send(info)
-    })
+  Person.countDocuments({}, function(err, count) {
+    const info = `
+      <p>Phonebook has info for ${count} people.</p>
+      <p>${(new Date()).toString()}</p>
+    `
+    response.send(info)
+  })
 }
+
+
+
+/* API Routes
+------------------------------------------------------------------------------- */
 
 /**
  * Get all persons
