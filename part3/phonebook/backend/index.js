@@ -75,6 +75,8 @@ function errorHandler(error, request, response, next) {
 
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return makeResponse(response, 400, 'send', 'malformatted id')
+  } else if (error.name === 'ValidationError') {
+    return makeResponse(response, 400, 'json', error.message)
   }
 
   next(error)
@@ -191,14 +193,6 @@ function apiDelete(request, response, next) {
  */
 function apiAdd(request, response, next) {
   const body = request.body
-
-  if (!body.name) {
-    return makeResponse(response, 400, 'json', 'Name missing')
-  }
-
-  if (!body.number) {
-    return makeResponse(response, 400, 'json', 'Number missing')
-  }  
 
   const person = new Person({
     name: body.name,
