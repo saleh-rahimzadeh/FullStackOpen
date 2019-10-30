@@ -78,13 +78,13 @@ const App = () => {
 					resetStates()
 				})
 				.catch(error => {
-					arrangeNotification("Error: Can't add a new person", true)
+					arrangeNotification("Error: Can't add a new person. " + error.response.data.error, true)
 				})
 			return
 		}
-
 		if (thatPerson.number === newNumber) {
 			alert(`${newName} is already added to phonebook`)
+			return
 		} else {
 			if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
 				const updatedPerson = { 
@@ -104,6 +104,7 @@ const App = () => {
 						arrangeNotification("Error: Can't update the person", true)
 					})
 			}
+			return
 		}
 	}
 
