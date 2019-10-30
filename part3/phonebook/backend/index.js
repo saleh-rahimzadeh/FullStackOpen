@@ -56,8 +56,8 @@ app.listen(process.env.PORT, () => {
 /**
  * Adding 'post-data' token to MORGAN
  */
-morgan.token('post-data', function (request) { 
-  return request.method === 'POST' ? JSON.stringify(request.body) : ' ' 
+morgan.token('post-data', function (request) {
+  return request.method === 'POST' ? JSON.stringify(request.body) : ' '
 })
 
 /**
@@ -71,7 +71,7 @@ function unknownEndpoint(request, response) {
  * Handling errors
  */
 function errorHandler(error, request, response, next) {
-  console.error("ERROR:", error.message)
+  console.error('ERROR:', error.message)
 
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return makeResponse(response, 400, 'send', 'malformatted id')
@@ -102,13 +102,13 @@ const makeResponse = (response, errorCode, type, message) => {
     return response.status(errorCode).end()
   }
   if (type === 'json') {
-    return response.status(errorCode).json({ 
-        error: message
+    return response.status(errorCode).json({
+      error: message
     })
   }
   if (type === 'send') {
-    return response.status(errorCode).send({ 
-        error: message
+    return response.status(errorCode).send({
+      error: message
     })
   }
 }
@@ -201,8 +201,9 @@ function apiAdd(request, response, next) {
 
   person
     .save()
-    .then(result => {
-      response.json(person.toJSON())
+    .then(newPerson => newPerson.toJSON())
+    .then(newAndFormattedPerson => {
+      response.json(newAndFormattedPerson)
     })
     .catch(error => next(error))
 }
@@ -219,7 +220,7 @@ function apiUpdat(request, response, next) {
   }
 
   Person
-    .findByIdAndUpdate(fetchID(request), person, {new: true})
+    .findByIdAndUpdate(fetchID(request), person, { new: true })
     .then(updatedPerson => {
       response.json(updatedPerson.toJSON())
     })

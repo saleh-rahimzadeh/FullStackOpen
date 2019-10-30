@@ -7,7 +7,8 @@
     "watch": "nodemon",
     "commit": "git add . && git commit -m phonebook",
     "deploy": "git push heroku master",
-    "log": "heroku logs --tail"
+    "log": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -16,5 +17,8 @@
     "mongoose": "^5.7.7",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
   }
 }

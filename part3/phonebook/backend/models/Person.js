@@ -7,41 +7,41 @@ mongoose.set('useFindAndModify', false)
 
 
 function Connect() {
-	const url = process.env.MONGODB_URI
+  const url = process.env.MONGODB_URI
 
 
-	// Connection to the Database
-	console.log('Connecting to:', url)
+  // Connection to the Database
+  console.log('Connecting to:', url)
 
-	mongoose
-		.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-	  .then(result => {
-	    console.log('Connected to MongoDB.')
-	  })
-	  .catch((error) => {
-	    console.log('ERROR connecting to MongoDB:', error.message)
-	  })
-
-
-	// Create Schema & Model
-	const personSchema = new mongoose.Schema({
-	  name:   { type: String, required: true, unique: true, minlength: 3 },
-	  number: { type: String, required: true, unique: true, minlength: 8 },
-	})
-
-	personSchema.plugin(uniqueValidator)
-
-	personSchema.set('toJSON', {
-	  transform: (document, returnedObject) => {
-	    returnedObject.id = returnedObject._id.toString()
-	    delete returnedObject._id
-	    delete returnedObject.__v
-	  }
-	})
+  mongoose
+    .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('Connected to MongoDB.')
+    })
+    .catch((error) => {
+      console.log('ERROR connecting to MongoDB:', error.message)
+    })
 
 
-	// Return Person Model
-	return mongoose.model('Person', personSchema)
+  // Create Schema & Model
+  const personSchema = new mongoose.Schema({
+    name:   { type: String, required: true, unique: true, minlength: 3 },
+    number: { type: String, required: true, unique: true, minlength: 8 },
+  })
+
+  personSchema.plugin(uniqueValidator)
+
+  personSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+      returnedObject.id = returnedObject._id.toString()
+      delete returnedObject._id
+      delete returnedObject.__v
+    }
+  })
+
+
+  // Return Person Model
+  return mongoose.model('Person', personSchema)
 }
 
 

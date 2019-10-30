@@ -24,22 +24,22 @@ const dbname = 'phonebook'
 const password = process.argv[2]
 
 mongoose.connect(
-  `mongodb+srv://user-fullstack:${password}@cluster0-jhnjl.azure.mongodb.net/${dbname}?retryWrites=true&w=majority`, 
+  `mongodb+srv://user-fullstack:${password}@cluster0-jhnjl.azure.mongodb.net/${dbname}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
 
 
 
 // Check Connectivity
-var db = mongoose.connection;
+var db = mongoose.connection
 
 db.on('error', function() {
-	console.log('Error in connection.')
+  console.log('Error in connection.')
   process.exit(1)
-});
+})
 
 db.once('open', function() {
-});
+})
 
 
 
