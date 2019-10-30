@@ -14,11 +14,6 @@ jspm_packages/
 # testing
 coverage/
 
-# production
-/build
-build/
-build/Release
-
 # misc
 .DS_Store
 .env.local
