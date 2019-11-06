@@ -12,7 +12,25 @@ const totalLikes = (blogs) => {
     : blogs.map(blog => blog.likes).reduce(reducer, 0)
 }
 
+const favoriteBlog = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const likes = blogs.map(blog => blog.likes)
+  const position = likes.indexOf(Math.max.apply(Math, likes))
+
+  return {
+    title: blogs[position].title,
+    author: blogs[position].author,
+    likes: blogs[position].likes
+  }
+}
+
+
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 }
