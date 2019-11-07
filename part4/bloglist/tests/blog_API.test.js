@@ -85,8 +85,7 @@ describe('Testing blogs API', () => {
   })
 
 
-
-  test('undefined likes property of blog was set to 0', async () => {
+  test('blog without likes property is set to 0', async () => {
     const newBlog = {
       title: 'My dotJS 2017 Keynote',
       author: 'Brendan Eich',
@@ -102,6 +101,23 @@ describe('Testing blogs API', () => {
     const listBlogs = await Blog.find({})
     const blog = listBlogs.find(blog => blog.title === 'My dotJS 2017 Keynote')
     expect(blog.likes).toBe(0)
+  })
+
+
+  test('blog without title and url is not added', async () => {
+    const newBlog = {
+      author: 'Unknown Artist',
+      likes: 1
+    }
+
+    await api
+      .post(uri.API_URI)
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const listBlogs = await Blog.find({})
+    expect(listBlogs.length).toBe(initialBlogs.length)
   })
 
 })
