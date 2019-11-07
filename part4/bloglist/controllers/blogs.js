@@ -30,5 +30,19 @@ blogsRouter.post(uri.HOME_URI, async (request, response, next) => {
   }
 })
 
+// Delete a blog
+blogsRouter.delete(uri.API_ID_URI, async (request, response, next) => {
+  try {
+    const result = await Blog.findByIdAndRemove(request.params.id)
+    if (result) {
+      response.status(204).end()
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 
 module.exports = blogsRouter

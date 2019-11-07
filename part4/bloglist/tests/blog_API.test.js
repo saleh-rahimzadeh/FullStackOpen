@@ -31,16 +31,18 @@ const initialBlogs = [
 
 
 
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  const blogsPromises = initialBlogs
+    .map(blog => new Blog(blog))
+    .map(blog => blog.save())
+  await Promise.all(blogsPromises)
+})
+
+
+
 describe('Testing blogs API', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-
-    const blogsPromises = initialBlogs
-      .map(blog => new Blog(blog))
-      .map(blog => blog.save())
-    await Promise.all(blogsPromises)
-  })
-
 
   test('blogs are returned as json', async () => {
     await api
@@ -62,6 +64,11 @@ describe('Testing blogs API', () => {
     expect(blog.id).toBeDefined()
   })
 
+})
+
+
+
+describe('addding new blogs', () => {
 
   test('a valid blog can be added', async () => {
     const newBlog = {
@@ -114,10 +121,30 @@ describe('Testing blogs API', () => {
       .post(uri.API_URI)
       .send(newBlog)
       .expect(400)
-      .expect('Content-Type', /application\/json/)
 
     const listBlogs = await Blog.find({})
     expect(listBlogs.length).toBe(initialBlogs.length)
+  })
+
+})
+
+
+
+describe('deletion of blogs', () => {
+
+  test('delete a blog by valid id', async () => {
+    const listBlogs = await Blog.find({})
+    const blog = listBlogs[0].toJSON()
+
+    await api
+      .delete(`${uri.API_URI}/${blog.id}`)
+      .expect(204)
+
+    const changedBlogs = await Blog.find({})
+    expect(changedBlogs.length).toBe(initialBlogs.length - 1)
+
+    const contents = changedBlogs.map(blog => blog.title)
+    expect(contents).not.toContain(blog.content)
   })
 
 })
