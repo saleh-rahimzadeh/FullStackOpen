@@ -58,8 +58,31 @@ describe('Testing blogs API', () => {
   test('there is ID property', async () => {
     const listBlogs = await Blog.find({})
     const blog = listBlogs.map(blog => blog.toJSON())[0]
-    expect(blog.id).toBeDefined();
+    expect(blog.id).toBeDefined()
   })
+
+
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'Code Complete',
+      author: 'Steve McConnell',
+      url: 'http://www.stevemcconnell.com/',
+      likes: 25
+    }
+
+    await api
+      .post(uri.API_URI)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const listBlogs = await Blog.find({})
+    expect(listBlogs.length).toBe(initialBlogs.length + 1)
+
+    const contents = listBlogs.map(blog => blog.title)
+    expect(contents).toContain('Code Complete')
+  })
+
 })
 
 
