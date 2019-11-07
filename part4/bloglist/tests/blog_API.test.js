@@ -21,6 +21,12 @@ const initialBlogs = [
     url: 'http://exploringjs.com/es6.html',
     likes: 10
   },
+  {
+    title: 'Thoughts on Rust in 2019',
+    author: 'Steve Klabnik',
+    url: 'https://words.steveklabnik.com/thoughts-on-rust-in-2019',
+    likes: 5
+  },
 ]
 
 
@@ -28,12 +34,12 @@ describe('Testing blogs API', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
 
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
+    const blogsPromises = initialBlogs
+      .map(blog => new Blog(blog))
+      .map(blog => blog.save())
+    await Promise.all(blogsPromises)
   })
+
 
   test('blogs are returned as json', async () => {
     await api
@@ -46,6 +52,13 @@ describe('Testing blogs API', () => {
   test('all blogs are returned', async () => {
     const response = await api.get(uri.API_URI)
     expect(response.body.length).toBe(initialBlogs.length)
+  })
+
+
+  test('there is ID property', async () => {
+    const listBlogs = await Blog.find({})
+    const blog = listBlogs.map(blog => blog.toJSON())[0]
+    expect(blog.id).toBeDefined();
   })
 })
 

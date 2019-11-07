@@ -7,7 +7,8 @@
     "watch": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
-    "test_api": "cross-env NODE_ENV=test npx jest tests/blog_API.test.js --runInBand --forceExit"
+    "test_api": "cross-env NODE_ENV=test npx jest tests/blog_API.test.js --runInBand --forceExit",
+    "test_api_id": "cross-env NODE_ENV=test npx jest -t \"there is ID property\" --runInBand --forceExit"
   },
   "dependencies": {
     "cors": "^2.8.5",
