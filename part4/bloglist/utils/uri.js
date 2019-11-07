@@ -1,4 +1,4 @@
 module.exports = {
-  PAGE_URI      : '/',
-  API_URI       : '/api/blogs'
+  HOME_URI : '/',
+  API_URI  : '/api/blogs'
 }

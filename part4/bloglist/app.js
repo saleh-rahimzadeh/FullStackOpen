@@ -4,6 +4,7 @@ const morgan     = require('morgan')
 const cors       = require('cors')
 const uri        = require('./utils/uri.js')
 const config     = require('./utils/config')
+const logger     = require('./utils/logger')
 const middleware = require('./utils/middleware')
 
 
@@ -17,15 +18,15 @@ app.use(morgan('tiny'))
 app.use(middleware.requestLogger)
 
 // Connection to the Database
-console.log('Connecting to:', config.MONGODB_URI)
+logger.info('Connecting to:', config.MONGODB_URI)
 const mongoose = require('mongoose')
 mongoose.set('useFindAndModify', false)
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log('Connected to MongoDB.')
+    logger.info('Connected to MongoDB.')
   })
   .catch((error) => {
-    console.log('ERROR connecting to MongoDB:', error.message)
+    logger.error('ERROR connecting to MongoDB:', error.message)
   })
 
 // Router Middleware

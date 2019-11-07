@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
+    "test_api": "cross-env NODE_ENV=test npx jest tests/blog_API.test.js --runInBand --forceExit"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -18,8 +19,10 @@
     "morgan": "^1.9.1"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "eslint": "^6.6.0",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"
