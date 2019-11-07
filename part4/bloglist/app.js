@@ -14,8 +14,10 @@ const app = express()
 app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
 app.use(middleware.requestLogger)
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('tiny'))
+}
 
 // Connection to the Database
 logger.info('Connecting to:', config.MONGODB_URI)

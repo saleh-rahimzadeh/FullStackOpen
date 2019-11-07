@@ -15,7 +15,12 @@ blogsRouter.get(uri.HOME_URI, async (request, response, next) => {
 
 // Save new blog
 blogsRouter.post(uri.HOME_URI, async (request, response, next) => {
-  const blog = new Blog(request.body)
+  const body = request.body
+
+  const blog = new Blog({
+    ...body,
+    likes: body.likes === undefined ? 0 : body.likes
+  })
 
   try {
     const savedNote = await blog.save()

@@ -30,6 +30,7 @@ const initialBlogs = [
 ]
 
 
+
 describe('Testing blogs API', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
@@ -83,7 +84,28 @@ describe('Testing blogs API', () => {
     expect(contents).toContain('Code Complete')
   })
 
+
+
+  test('undefined likes property of blog was set to 0', async () => {
+    const newBlog = {
+      title: 'My dotJS 2017 Keynote',
+      author: 'Brendan Eich',
+      url: 'https://brendaneich.com/2017/12/my-dotjs-2017-keynote/'
+    }
+
+    await api
+      .post(uri.API_URI)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const listBlogs = await Blog.find({})
+    const blog = listBlogs.find(blog => blog.title === 'My dotJS 2017 Keynote')
+    expect(blog.likes).toBe(0)
+  })
+
 })
+
 
 
 beforeAll(async (done) => {
