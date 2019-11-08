@@ -147,6 +147,108 @@ describe('deletion of blogs', () => {
     expect(contents).not.toContain(blog.content)
   })
 
+  test('reject deletion a blog by non-exist id', async () => {
+    await api
+      .delete(`${uri.API_URI}/5dc53c710cb2491364dbb100`)
+      .expect(404)
+
+    const changedBlogs = await Blog.find({})
+    expect(changedBlogs.length).toBe(initialBlogs.length)
+  })
+
+  test('reject deletion a blog by invalid id', async () => {
+    await api
+      .delete(`${uri.API_URI}/0`)
+      .expect(400)
+
+    const changedBlogs = await Blog.find({})
+    expect(changedBlogs.length).toBe(initialBlogs.length)
+  })
+
+})
+
+
+
+describe('updating of blogs', () => {
+
+  test('update a blog by valid id', async () => {
+    const listBlogs = await Blog.find({})
+    const blog = listBlogs[0].toJSON()
+
+    const changedBlog = {
+      title: 'Test Update',
+      author: 'Mr. Test',
+      url: 'http://www.test.com/',
+      likes: 4
+    }
+
+    await api
+      .put(`${uri.API_URI}/${blog.id}`)
+      .send(changedBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const updatedBlogs = await Blog.find({})
+    const contents = updatedBlogs.map(blog => blog.title)
+    expect(contents).toContain('Test Update')
+  })
+
+  test('reject updating a blog by non-exist id', async () => {
+    const changedBlog = {
+      title: 'Test Update Invalid',
+      author: 'Mr. Test',
+      url: 'http://www.test.com/',
+      likes: 4
+    }
+
+    await api
+      .put(`${uri.API_URI}/5dc53c710cb2491364dbb100`)
+      .send(changedBlog)
+      .expect(404)
+
+    const updatedBlogs = await Blog.find({})
+    const contents = updatedBlogs.map(blog => blog.title)
+    expect(contents).not.toContain('Test Update Invalid')
+  })
+
+  test('reject updating a blog by invalid id', async () => {
+    const changedBlog = {
+      title: 'Test Update Invalid',
+      author: 'Mr. Test',
+      url: 'http://www.test.com/',
+      likes: 4
+    }
+
+    await api
+      .put(`${uri.API_URI}/0`)
+      .send(changedBlog)
+      .expect(400)
+
+    const updatedBlogs = await Blog.find({})
+    const contents = updatedBlogs.map(blog => blog.title)
+    expect(contents).not.toContain('Test Update Invalid')
+  })
+
+  test('reject updating a blog because of lack of likes', async () => {
+    const listBlogs = await Blog.find({})
+    const blog = listBlogs[0].toJSON()
+
+    const changedBlog = {
+      title: 'Test Update Without Likes',
+      author: 'Mr. Test',
+      url: 'http://www.test.com/'
+    }
+
+    await api
+      .put(`${uri.API_URI}/${blog.id}`)
+      .send(changedBlog)
+      .expect(400)
+
+    const updatedBlogs = await Blog.find({})
+    const contents = updatedBlogs.map(blog => blog.title)
+    expect(contents).not.toContain('Test Update Without Likes')
+  })
+
 })
 
 

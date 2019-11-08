@@ -44,5 +44,32 @@ blogsRouter.delete(uri.API_ID_URI, async (request, response, next) => {
   }
 })
 
+// Update a blog
+blogsRouter.put(uri.API_ID_URI, async (request, response, next) => {
+  const body = request.body
+
+  if (body.likes === undefined) {
+    return response.status(400).json({ error: 'likes missing' })
+  }
+
+  const blog = {
+    title  : body.title,
+    author : body.author,
+    url    : body.url,
+    likes  : body.likes
+  }
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    if (updatedBlog) {
+      response.status(201).json(updatedBlog.toJSON())
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 
 module.exports = blogsRouter
