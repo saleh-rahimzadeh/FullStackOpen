@@ -7,8 +7,9 @@
     "watch": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
-    "test_api": "cross-env NODE_ENV=test npx jest tests/blog_API.test.js --verbose --runInBand --forceExit",
-    "test_api_id": "cross-env NODE_ENV=test npx jest -t \"there is ID property\" --verbose --runInBand --forceExit"
+    "test_blog_api": "cross-env NODE_ENV=test npx jest tests/blog_API.test.js --verbose --runInBand --forceExit",
+    "test_blog_api_id": "cross-env NODE_ENV=test npx jest -t \"there is ID property\" --verbose --runInBand --forceExit",
+    "test_user_api": "cross-env NODE_ENV=test npx jest tests/user_API.test.js --verbose --runInBand --forceExit"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",

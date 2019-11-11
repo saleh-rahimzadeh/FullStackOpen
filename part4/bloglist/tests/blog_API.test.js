@@ -46,14 +46,14 @@ describe('Testing blogs API', () => {
 
   test('blogs are returned as json', async () => {
     await api
-      .get(uri.API_URI)
+      .get(uri.API_BLOGS_URI)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   }, 50000)
 
 
   test('all blogs are returned', async () => {
-    const response = await api.get(uri.API_URI)
+    const response = await api.get(uri.API_BLOGS_URI)
     expect(response.body.length).toBe(initialBlogs.length)
   })
 
@@ -79,7 +79,7 @@ describe('addding new blogs', () => {
     }
 
     await api
-      .post(uri.API_URI)
+      .post(uri.API_BLOGS_URI)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -100,7 +100,7 @@ describe('addding new blogs', () => {
     }
 
     await api
-      .post(uri.API_URI)
+      .post(uri.API_BLOGS_URI)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -118,7 +118,7 @@ describe('addding new blogs', () => {
     }
 
     await api
-      .post(uri.API_URI)
+      .post(uri.API_BLOGS_URI)
       .send(newBlog)
       .expect(400)
 
@@ -137,7 +137,7 @@ describe('deletion of blogs', () => {
     const blog = listBlogs[0].toJSON()
 
     await api
-      .delete(`${uri.API_URI}/${blog.id}`)
+      .delete(`${uri.API_BLOGS_URI}/${blog.id}`)
       .expect(204)
 
     const changedBlogs = await Blog.find({})
@@ -149,7 +149,7 @@ describe('deletion of blogs', () => {
 
   test('reject deletion a blog by non-exist id', async () => {
     await api
-      .delete(`${uri.API_URI}/5dc53c710cb2491364dbb100`)
+      .delete(`${uri.API_BLOGS_URI}/5dc53c710cb2491364dbb100`)
       .expect(404)
 
     const changedBlogs = await Blog.find({})
@@ -158,7 +158,7 @@ describe('deletion of blogs', () => {
 
   test('reject deletion a blog by invalid id', async () => {
     await api
-      .delete(`${uri.API_URI}/0`)
+      .delete(`${uri.API_BLOGS_URI}/0`)
       .expect(400)
 
     const changedBlogs = await Blog.find({})
@@ -183,7 +183,7 @@ describe('updating of blogs', () => {
     }
 
     await api
-      .put(`${uri.API_URI}/${blog.id}`)
+      .put(`${uri.API_BLOGS_URI}/${blog.id}`)
       .send(changedBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -202,7 +202,7 @@ describe('updating of blogs', () => {
     }
 
     await api
-      .put(`${uri.API_URI}/5dc53c710cb2491364dbb100`)
+      .put(`${uri.API_BLOGS_URI}/5dc53c710cb2491364dbb100`)
       .send(changedBlog)
       .expect(404)
 
@@ -220,7 +220,7 @@ describe('updating of blogs', () => {
     }
 
     await api
-      .put(`${uri.API_URI}/0`)
+      .put(`${uri.API_BLOGS_URI}/0`)
       .send(changedBlog)
       .expect(400)
 
@@ -240,7 +240,7 @@ describe('updating of blogs', () => {
     }
 
     await api
-      .put(`${uri.API_URI}/${blog.id}`)
+      .put(`${uri.API_BLOGS_URI}/${blog.id}`)
       .send(changedBlog)
       .expect(400)
 
