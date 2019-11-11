@@ -32,7 +32,8 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
   })
 
 // Router Middleware
-app.use(uri.API_URI, require('./controllers/blogs'))
+app.use(uri.API_BLOGS_URI, require('./controllers/blogs'))
+app.use(uri.API_USERS_URI, require('./controllers/users'))
 
 // Post Middlewares
 app.use(middleware.unknownEndpoint)

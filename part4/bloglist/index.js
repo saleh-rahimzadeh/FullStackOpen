@@ -16,5 +16,8 @@ const server = http.createServer(app)
 
 server.listen(config.PORT, () => {
   console.log('Starting Application [', (new Date()).toLocaleTimeString(), ']')
-  console.log(`URL: http://localhost:${config.PORT}${uri.API_URI}`)
+  console.log(`URL: http://localhost:${config.PORT}`)
+  console.log('APIs:')
+  console.log(` ${uri.API_BLOGS_URI}`)
+  console.log(` ${uri.API_USERS_URI}`)
 })

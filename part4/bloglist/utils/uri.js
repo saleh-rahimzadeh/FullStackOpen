@@ -1,5 +1,6 @@
 module.exports = {
-  HOME_URI   : '/',
-  API_URI    : '/api/blogs',
-  API_ID_URI : '/:id'
+  HOME_URI      : '/',
+  API_ID_URI    : '/:id',
+  API_BLOGS_URI : '/api/blogs',
+  API_USERS_URI : '/api/users'
 }
