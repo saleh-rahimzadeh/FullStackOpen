@@ -2,7 +2,7 @@ const _ = require('lodash')
 
 
 
-const dummy = (blogs) => {
+const dummy = (blogs) => {  /* eslint-disable-line */
   return 1
 }
 

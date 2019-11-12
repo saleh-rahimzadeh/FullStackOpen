@@ -1,12 +1,15 @@
 const blogsRouter = require('express').Router()
 const Blog        = require('../models/blog')
 const uri         = require('../utils/uri.js')
+const User        = require('../models/user')
 
 
 // Get all blogs
 blogsRouter.get(uri.HOME_URI, async (request, response, next) => {
   try {
-    const blogs = await Blog.find({})
+    const blogs = await Blog
+      .find({})
+      .populate('user', { username: 1, name: 1 })
     response.json(blogs.map(blog => blog.toJSON()))
   } catch (exception) {
     next(exception)
@@ -17,13 +20,21 @@ blogsRouter.get(uri.HOME_URI, async (request, response, next) => {
 blogsRouter.post(uri.HOME_URI, async (request, response, next) => {
   const body = request.body
 
+  // const user = await User.findById(body.userId)
+  const user = await User.findOne({})
+
   const blog = new Blog({
     ...body,
-    likes: body.likes === undefined ? 0 : body.likes
+    likes: body.likes === undefined ? 0 : body.likes,
+    user: user._id
   })
 
   try {
     const savedNote = await blog.save()
+
+    user.blogs = user.blogs.concat(savedNote._id)
+    await user.save()
+
     response.status(201).json(savedNote.toJSON())
   } catch (exception) {
     next(exception)

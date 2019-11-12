@@ -7,7 +7,9 @@ const uri         = require('../utils/uri.js')
 // Get all users
 usersRouter.get(uri.HOME_URI, async (request, response, next) => {
   try {
-    const users = await User.find({})
+    const users = await User
+      .find({})
+      .populate('blogs', { url: 1, title: 1, author: 1 })
     response.json(users.map(user => user.toJSON()))
   } catch (exception) {
     next(exception)
