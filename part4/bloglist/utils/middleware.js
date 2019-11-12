@@ -1,6 +1,7 @@
 const logger = require('./logger')
 
 
+// Logging requests
 const requestLogger = (request, response, next) => {
   logger.info('---')
   logger.info('Method:', request.method)
@@ -8,10 +9,12 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+// Response for Unknown Endpoints
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+// Handling unhandled errors
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -26,10 +29,23 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+// Acquire token from authorization header
+const acquireAuthorizationToken = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.authorizationToken = authorization.substring(7)
+  } else {
+    request.authorizationToken = null
+  }
+
+  next()
+}
+
 
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  acquireAuthorizationToken
 }

@@ -5,17 +5,6 @@ const jwt         = require('jsonwebtoken')
 const User        = require('../models/user')
 
 
-// Get token from authorization header
-const getAuthorizationToken = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-
-  return null
-}
-
-
 // Get all blogs
 blogsRouter.get(uri.HOME_URI, async (request, response, next) => {
   try {
@@ -33,7 +22,7 @@ blogsRouter.post(uri.HOME_URI, async (request, response, next) => {
   const body = request.body
 
   try {
-    const token = getAuthorizationToken(request)
+    const token = request.authorizationToken
     const decodedToken = jwt.verify(token, process.env.PASSWORD_SECRET)
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
