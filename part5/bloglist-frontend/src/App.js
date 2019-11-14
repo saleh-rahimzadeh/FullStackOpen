@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog                           from './components/Blog'
+import NewBlog                        from './components/NewBlog'
 import blogsService                   from './services/blogs'
 import loginService                   from './services/login'
 
@@ -11,10 +12,13 @@ const App = () => {
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
   
   /* Defining States */
-  const [ username, setUsername ] = useState('')
-  const [ password, setPassword ] = useState('') 
-  const [ user, setUser ]         = useState(null)
-  const [ blogs, setBlogs ]       = useState([])
+  const [ username, setUsername ]   = useState('')
+  const [ password, setPassword ]   = useState('')
+  const [ user, setUser ]           = useState(null)
+  const [ blogs, setBlogs ]         = useState([])
+  const [ newTitle,   setNewTitle ] = useState('')
+  const [ newAuthor, setNewAuthor ] = useState('')
+  const [ newUrl, setNewUrl ]       = useState('')
   
   
   /* Using Effect */
@@ -61,8 +65,40 @@ const App = () => {
     blogsService.setToken(null)
     setUser(null)
   }
+
+  const newTitle_onChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+
+  const newAuthor_onChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const newUrl_onChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+
+  const addBlog_onSubmit = async (event) => {
+    event.preventDefault()
+
+    blogsService.create({
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    })
+    .then(blogData => {
+      console.log('Blog created', blogData)
+      setBlogs(blogs.concat(blogData))
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+    })
+    .catch(error => {
+      console.log('ERROR BLOG', error)
+    })
+  }
+
   
-    
   /* Rendering Components */
   console.log('Rendering Application...')
 
@@ -89,6 +125,16 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
+
+      <NewBlog
+        title={newTitle}
+        author={newAuthor}
+        url={newUrl}
+        newTitleEventHandler={newTitle_onChange}
+        newAuthorEventHandler={newAuthor_onChange}
+        newUrlEventHandler={newUrl_onChange}
+        newBlogEventHandler={addBlog_onSubmit} />
+      
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
