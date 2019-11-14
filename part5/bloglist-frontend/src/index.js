@@ -10,9 +10,11 @@ import React    from 'react';
 import ReactDOM from 'react-dom';
 import App      from './App'
 
+import './index.css'
 
 
-console.log('Part5: 3')
+
+console.log('Part5: 4')
 console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog                           from './components/Blog'
 import NewBlog                        from './components/NewBlog'
+import Notification                   from './components/Notification'
 import blogsService                   from './services/blogs'
 import loginService                   from './services/login'
 
@@ -12,13 +13,21 @@ const App = () => {
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
   
   /* Defining States */
-  const [ username, setUsername ]   = useState('')
-  const [ password, setPassword ]   = useState('')
-  const [ user, setUser ]           = useState(null)
-  const [ blogs, setBlogs ]         = useState([])
-  const [ newTitle,   setNewTitle ] = useState('')
-  const [ newAuthor, setNewAuthor ] = useState('')
-  const [ newUrl, setNewUrl ]       = useState('')
+  const [ username, setUsername ]         = useState('')
+  const [ password, setPassword ]         = useState('')
+  const [ user, setUser ]                 = useState(null)
+  const [ blogs, setBlogs ]               = useState([])
+  const [ newTitle,   setNewTitle ]       = useState('')
+  const [ newAuthor, setNewAuthor ]       = useState('')
+  const [ newUrl, setNewUrl ]             = useState('')
+  const [ notification, setNotification ] = useState(null)
+
+
+  /* Util Functions */
+  const arrangeNotification = (message, isError = false) => {
+    setNotification({ message, isError })
+    setTimeout(() => { setNotification(null) }, 5000)
+  }
   
   
   /* Using Effect */
@@ -40,9 +49,10 @@ const App = () => {
   }, [])
   
   
-  /* Event Hand lers */
+  /* Event Handlers */
   const handleLogin = async (event) => {
     event.preventDefault()
+
     try {
       const user = await loginService.login({
         username,
@@ -56,7 +66,8 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('Error', exception)
+      arrangeNotification("Error: Can't log in", true)
+      console.log(exception.response)
     }
   }
 
@@ -81,21 +92,23 @@ const App = () => {
   const addBlog_onSubmit = async (event) => {
     event.preventDefault()
 
-    blogsService.create({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    })
-    .then(blogData => {
-      console.log('Blog created', blogData)
+    try {
+      const blogData = await blogsService.create({
+        title: newTitle,
+        author: newAuthor,
+        url: newUrl
+      })
       setBlogs(blogs.concat(blogData))
+
+      console.log('Blog created', blogData)
+      arrangeNotification(`A new blog ${blogData.title} by ${blogData.author} added`)
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
-    })
-    .catch(error => {
-      console.log('ERROR BLOG', error)
-    })
+    } catch (exception) {
+      arrangeNotification("Error: Can't add new blog.", true)
+      console.log(exception.response)
+    }
   }
 
   
@@ -106,6 +119,9 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+
+        <Notification notice={notification} />
+
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -125,6 +141,8 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
+
+      <Notification notice={notification} />
 
       <NewBlog
         title={newTitle}
