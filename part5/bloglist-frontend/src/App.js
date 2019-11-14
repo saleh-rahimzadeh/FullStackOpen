@@ -6,6 +6,9 @@ import loginService                   from './services/login'
 
 
 const App = () => {
+
+  /* Consts */
+  const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
   
   /* Defining States */
   const [ username, setUsername ] = useState('')
@@ -22,6 +25,15 @@ const App = () => {
         setBlogs(blogsData)
       })
   }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem(LOCALSTORAGE_LOGGEDUSER)
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogsService.setToken(user.token)
+    }
+  }, [])
   
   
   /* Event Hand lers */
@@ -32,6 +44,9 @@ const App = () => {
         username,
         password
       })
+
+      window.localStorage.setItem(LOCALSTORAGE_LOGGEDUSER, JSON.stringify(user))
+      blogsService.setToken(user.token)
       setUser(user)
 
       setUsername('')
@@ -39,6 +54,12 @@ const App = () => {
     } catch (exception) {
       console.log('Error', exception)
     }
+  }
+
+  const handleLogout = (event) => {
+    window.localStorage.removeItem(LOCALSTORAGE_LOGGEDUSER)
+    blogsService.setToken(null)
+    setUser(null)
   }
   
     
@@ -67,7 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <p>{user.name} logged in</p>
+      <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
