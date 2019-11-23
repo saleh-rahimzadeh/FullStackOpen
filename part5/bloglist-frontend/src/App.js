@@ -116,6 +116,33 @@ const App = () => {
     }
   }
 
+  const handleLikes = async (blog) => {
+    try {
+      const blogData = await blogsService.update(blog.id, {
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: (blog.likes + 1),
+        user: blog.user.id
+      })
+
+      setBlogs(blogs.map(blogItem => {
+        if (blogItem.id !== blogData.id) {
+          return blogItem
+        } else {
+          blogItem.likes = blogData.likes
+          return blogItem
+        }
+      }))
+
+      console.log('Blog liked', blogData)
+      arrangeNotification(`The blog ${blogData.title} has liked to ${blogData.likes}.`)
+    } catch (exception) {
+      arrangeNotification("Error: Can't like a blog.", true)
+      console.log(exception.response)
+    }
+  }
+
   
   /* Rendering Components */
   console.log('Rendering Application...')
@@ -161,7 +188,7 @@ const App = () => {
       </Togglable>
       
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likesEventHandler={() => handleLikes(blog)} />
       )}
     </div>
   )
