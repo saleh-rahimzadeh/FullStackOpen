@@ -32,6 +32,10 @@ const App = () => {
     setNotification({ message, isError })
     setTimeout(() => { setNotification(null) }, 5000)
   }
+
+  const saveBlogsAsSorted = (blogs) => {
+    setBlogs(blogs.sort((first, second) => second.likes - first.likes))
+  }
   
   
   /* Using Effect */
@@ -39,7 +43,7 @@ const App = () => {
     blogsService
       .getAll()
       .then(blogsData => {
-        setBlogs(blogsData)
+        saveBlogsAsSorted(blogsData)
       })
   }, [])
 
@@ -103,7 +107,7 @@ const App = () => {
         url: newUrl
       })
       newBlogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(blogData))
+      saveBlogsAsSorted(blogs.concat(blogData))
 
       console.log('Blog created', blogData)
       arrangeNotification(`A new blog ${blogData.title} by ${blogData.author} added`)
@@ -126,7 +130,7 @@ const App = () => {
         user: blog.user.id
       })
 
-      setBlogs(blogs.map(blogItem => {
+      saveBlogsAsSorted(blogs.map(blogItem => {
         if (blogItem.id !== blogData.id) {
           return blogItem
         } else {
