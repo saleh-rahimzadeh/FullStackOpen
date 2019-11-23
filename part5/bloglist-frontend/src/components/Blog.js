@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 
 
-const Blog = ({ blog, likesEventHandler, removeEventHandler }) => {
+const Blog = ({ blog, user, likesEventHandler, removeEventHandler }) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisibility = () => {
@@ -47,7 +47,9 @@ const Blog = ({ blog, likesEventHandler, removeEventHandler }) => {
           added by {blog.user.name}
         </div>
         <div>
-          <button onClick={removeEventHandler}>Remove</button>
+          {
+            blog.user.username === user ? <button onClick={removeEventHandler}>Remove</button> : null
+          }
         </div>
       </div>
 
