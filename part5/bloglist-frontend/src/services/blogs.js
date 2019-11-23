@@ -29,11 +29,21 @@ const update = async (id, editedBlog) => {
   return response.data
 }
 
+const erase = async (id) => {
+  const httpConfig = {
+    headers: { Authorization: token }
+  }
+
+  const response = axios.delete(`${baseUrl}/${id}`, httpConfig)
+  return response
+}
+
 
 
 export default {
   setToken,
   create,
   getAll,
-  update
+  update,
+  erase
 }

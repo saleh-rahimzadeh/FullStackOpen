@@ -147,6 +147,22 @@ const App = () => {
     }
   }
 
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) { 
+      try {
+        await blogsService.erase(blog.id)
+
+        saveBlogsAsSorted(blogs.filter(blogItem => blogItem.id !== blog.id))
+
+        console.log('Blog removed', blog.id)
+        arrangeNotification(`The blog ${blog.title} has removed.`)
+      } catch (exception) {
+        arrangeNotification("Error: Can't remove a blog.", true)
+        console.log(exception.response)
+      }
+    }
+  }
+
   
   /* Rendering Components */
   console.log('Rendering Application...')
@@ -192,7 +208,7 @@ const App = () => {
       </Togglable>
       
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} likesEventHandler={() => handleLikes(blog)} />
+        <Blog key={blog.id} blog={blog} likesEventHandler={() => handleLikes(blog)} removeEventHandler={() => handleRemove(blog)} />
       )}
     </div>
   )
