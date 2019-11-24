@@ -12,7 +12,7 @@ const App = () => {
 
   /* Consts */
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
-  
+
   /* Defining States */
   const [ username, setUsername ]         = useState('')
   const [ password, setPassword ]         = useState('')
@@ -36,8 +36,8 @@ const App = () => {
   const saveBlogsAsSorted = (blogs) => {
     setBlogs(blogs.sort((first, second) => second.likes - first.likes))
   }
-  
-  
+
+
   /* Using Effect */
   useEffect(() => {
     blogsService
@@ -55,8 +55,8 @@ const App = () => {
       blogsService.setToken(user.token)
     }
   }, [])
-  
-  
+
+
   /* Event Handlers */
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -74,12 +74,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      arrangeNotification("Error: Can't log in", true)
+      arrangeNotification('Error: Can not log in', true)
       console.log(exception.response)
     }
   }
 
-  const handleLogout = (event) => {
+  const handleLogout = () => {
     window.localStorage.removeItem(LOCALSTORAGE_LOGGEDUSER)
     blogsService.setToken(null)
     setUser(null)
@@ -99,7 +99,7 @@ const App = () => {
 
   const addBlog_onSubmit = async (event) => {
     event.preventDefault()
-    
+
     try {
       const blogData = await blogsService.create({
         title: newTitle,
@@ -115,7 +115,7 @@ const App = () => {
       setNewAuthor('')
       setNewUrl('')
     } catch (exception) {
-      arrangeNotification("Error: Can't add new blog.", true)
+      arrangeNotification('Error: Can not add new blog.', true)
       console.log(exception.response)
     }
   }
@@ -142,13 +142,13 @@ const App = () => {
       console.log('Blog liked', blogData)
       arrangeNotification(`The blog ${blogData.title} has liked to ${blogData.likes}.`)
     } catch (exception) {
-      arrangeNotification("Error: Can't like a blog.", true)
+      arrangeNotification('Error: Can not like a blog.', true)
       console.log(exception.response)
     }
   }
 
   const handleRemove = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) { 
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
       try {
         await blogsService.erase(blog.id)
 
@@ -157,13 +157,13 @@ const App = () => {
         console.log('Blog removed', blog.id)
         arrangeNotification(`The blog ${blog.title} has removed.`)
       } catch (exception) {
-        arrangeNotification("Error: Can't remove a blog.", true)
+        arrangeNotification('Error: Can not remove a blog.', true)
         console.log(exception.response)
       }
     }
   }
 
-  
+
   /* Rendering Components */
   if (user === null) {
     return (
@@ -204,13 +204,13 @@ const App = () => {
           newUrlEventHandler={newUrl_onChange}
           newBlogEventHandler={addBlog_onSubmit} />
       </Togglable>
-      
+
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} user={user.username} likesEventHandler={() => handleLikes(blog)} removeEventHandler={() => handleRemove(blog)} />
       )}
     </div>
   )
-  
+
 }
 
 

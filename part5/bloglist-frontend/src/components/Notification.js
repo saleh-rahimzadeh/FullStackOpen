@@ -1,17 +1,17 @@
-import React from 'react';
+import React from 'react'
 
 
 
 const Notification = ({ notice }) => {
-	if (notice === null || notice === undefined) {
-		return null
-	}
+  if (notice === null || notice === undefined) {
+    return null
+  }
 
-	return (
-		<p className={notice.isError === true ? 'error' : 'success'}>
-			{notice.message}
-		</p>
-	)
+  return (
+    <p className={notice.isError === true ? 'error' : 'success'}>
+      {notice.message}
+    </p>
+  )
 }
 
 

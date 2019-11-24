@@ -6,20 +6,20 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 */
 
-import React    from 'react';
-import ReactDOM from 'react-dom';
+import React    from 'react'
+import ReactDOM from 'react-dom'
 import App      from './App'
 
 import './index.css'
 
 
 
-console.log('Part5: 11')
+console.log('Part5: 12')
 console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
 
 
 ReactDOM.render(
-  <App />, 
+  <App />,
   document.getElementById('root')
 )
