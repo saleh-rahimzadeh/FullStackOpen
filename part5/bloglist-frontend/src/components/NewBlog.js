@@ -1,4 +1,5 @@
-import React from 'react'
+import React     from 'react'
+import PropTypes from 'prop-types'
 
 
 
@@ -22,6 +23,17 @@ const NewBlog = ({ title, author, url, newTitleEventHandler, newAuthorEventHandl
       </form>
     </div>
   )
+}
+
+
+NewBlog.propTypes = {
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  newTitleEventHandler: PropTypes.func.isRequired,
+  newAuthorEventHandler: PropTypes.func.isRequired,
+  newUrlEventHandler: PropTypes.func.isRequired,
+  newBlogEventHandler: PropTypes.func.isRequired
 }
 
 
