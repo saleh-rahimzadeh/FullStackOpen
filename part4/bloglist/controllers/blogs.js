@@ -36,12 +36,13 @@ blogsRouter.post(uri.HOME_URI, async (request, response, next) => {
       user: user._id
     })
 
-    const savedNote = await blog.save()
+    const savedBlog = await blog.save()
+    const targetBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
 
-    user.blogs = user.blogs.concat(savedNote._id)
+    user.blogs = user.blogs.concat(targetBlog._id)
     await user.save()
 
-    response.status(201).json(savedNote.toJSON())
+    response.status(201).json(targetBlog.toJSON())
   } catch (exception) {
     next(exception)
   }
