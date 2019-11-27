@@ -1,13 +1,14 @@
-import React         from 'react'
-import { render }    from '@testing-library/react'
-import { prettyDOM } from '@testing-library/dom'
-import SimpleBlog    from './SimpleBlog'
+import React                 from 'react'
+import { render, fireEvent } from '@testing-library/react'
+import { prettyDOM }         from '@testing-library/dom'
+import SimpleBlog            from './SimpleBlog'
 
 
 
 describe('<SimpleBlog />', () => {
 
     let component
+    const likesMockHandler = jest.fn()
 
     beforeEach(() => {
         const blogData = {
@@ -16,11 +17,8 @@ describe('<SimpleBlog />', () => {
             likes:  1
         }
 
-        const onClickHandler = () => {
-        }
-
         component = render(
-            <SimpleBlog blog={blogData} onClick={onClickHandler} />
+            <SimpleBlog blog={blogData} onClick={likesMockHandler} />
         )
     })
 
@@ -41,6 +39,14 @@ describe('<SimpleBlog />', () => {
         expect(component.container).toHaveTextContent(
             'blog has 1 likes'
         )
+    })
+
+    test('twice clicking the button calls event handler twice', async () => {
+        const button = component.getByText('like+')
+        fireEvent.click(button)
+        fireEvent.click(button)
+
+        expect(likesMockHandler.mock.calls.length).toBe(2)
     })
 
 })
