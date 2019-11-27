@@ -36,7 +36,7 @@ const Blog = ({ blog, user, likesEventHandler, removeEventHandler }) => {
         {blog.title} - {blog.author}
       </div>
 
-      <div style={visibilityStyle}>
+      <div style={visibilityStyle} className="blog-content">
         <div>
           {blog.url}
         </div>
