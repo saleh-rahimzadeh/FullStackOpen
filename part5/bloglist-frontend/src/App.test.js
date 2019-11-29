@@ -26,4 +26,29 @@ describe('<App />', () => {
     )
   })
 
+  test('if a user is logged, the blog posts are rendered to the page', async () => {
+    const user = {
+      username: 'user1',
+      token: 't1',
+      name: 'User Test 1'
+    }
+    localStorage.setItem('BloglistLoggedUser', JSON.stringify(user))
+
+    const component = render(
+      <App />
+    )
+    component.rerender(<App />)
+
+    await waitForElement(
+      () => component.getByText('Logout')
+    )
+
+    expect(component.container).toHaveTextContent(
+      'blogs'
+    )
+
+    const blogs = component.container.querySelectorAll('.blog-content')
+    expect(blogs.length).toBe(2)
+  })
+
 })
