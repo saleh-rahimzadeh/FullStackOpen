@@ -156,6 +156,12 @@ const App = () => {
   }
 
 
+  const usernameProps = Object.assign({}, username)
+  delete usernameProps.reset
+  const passwordProps = Object.assign({}, password)
+  delete passwordProps.reset
+
+
   /* Rendering Components */
   if (user === null) {
     return (
@@ -167,11 +173,11 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input name="Username" {...username} />
+            <input name="Username" {...usernameProps} />
           </div>
           <div>
             password
-            <input name="Password" {...password} />
+            <input name="Password" {...passwordProps} />
           </div>
           <button type="submit">login</button>
         </form>
