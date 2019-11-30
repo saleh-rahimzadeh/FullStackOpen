@@ -15,15 +15,15 @@ const App = () => {
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
 
   /* Custom Hooks */
-  const username = useField('text')
-  const password = useField('password')
+  const username  = useField('text')
+  const password  = useField('password')
+  const newTitle  = useField('text')
+  const newAuthor = useField('text')
+  const newUrl    = useField('text')
 
   /* Defining States */
   const [ user, setUser ]                 = useState(null)
   const [ blogs, setBlogs ]               = useState([])
-  const [ newTitle,   setNewTitle ]       = useState('')
-  const [ newAuthor, setNewAuthor ]       = useState('')
-  const [ newUrl, setNewUrl ]             = useState('')
   const [ notification, setNotification ] = useState(null)
 
   /* Component References */
@@ -73,6 +73,9 @@ const App = () => {
       window.localStorage.setItem(LOCALSTORAGE_LOGGEDUSER, JSON.stringify(user))
       blogsService.setToken(user.token)
       setUser(user)
+
+      username.reset()
+      password.reset()
     } catch (exception) {
       arrangeNotification('Error: Can not log in', true)
       console.log(exception.response)
@@ -85,35 +88,24 @@ const App = () => {
     setUser(null)
   }
 
-  const newTitle_onChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const newAuthor_onChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const newUrl_onChange = (event) => {
-    setNewUrl(event.target.value)
-  }
-
   const addBlog_onSubmit = async (event) => {
     event.preventDefault()
 
     try {
       const blogData = await blogsService.create({
-        title: newTitle,
-        author: newAuthor,
-        url: newUrl
+        title: newTitle.value,
+        author: newAuthor.value,
+        url: newUrl.value
       })
       newBlogFormRef.current.toggleVisibility()
       saveBlogsAsSorted(blogs.concat(blogData))
 
       console.log('Blog created', blogData)
       arrangeNotification(`A new blog ${blogData.title} by ${blogData.author} added`)
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
+
+      newTitle.reset()
+      newAuthor.reset()
+      newUrl.reset()
     } catch (exception) {
       arrangeNotification('Error: Can not add new blog.', true)
       console.log(exception.response)
@@ -196,12 +188,12 @@ const App = () => {
 
       <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
         <NewBlog
-          title={newTitle}
-          author={newAuthor}
-          url={newUrl}
-          newTitleEventHandler={newTitle_onChange}
-          newAuthorEventHandler={newAuthor_onChange}
-          newUrlEventHandler={newUrl_onChange}
+          title={newTitle.value}
+          author={newAuthor.value}
+          url={newUrl.value}
+          newTitleEventHandler={newTitle.onChange}
+          newAuthorEventHandler={newAuthor.onChange}
+          newUrlEventHandler={newUrl.onChange}
           newBlogEventHandler={addBlog_onSubmit} />
       </Togglable>
 
