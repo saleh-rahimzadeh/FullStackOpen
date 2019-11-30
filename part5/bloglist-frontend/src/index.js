@@ -14,7 +14,7 @@ import './index.css'
 
 
 
-console.log('Part5: 12')
+console.log('Part5: 18')
 console.log('Starting Application [' + (new Date()).toLocaleTimeString() + ']')
 
 
