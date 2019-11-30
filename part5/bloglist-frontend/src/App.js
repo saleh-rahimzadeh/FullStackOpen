@@ -5,6 +5,7 @@ import Notification                   from './components/Notification'
 import Togglable                      from './components/Togglable'
 import blogsService                   from './services/blogs'
 import loginService                   from './services/login'
+import { useField }                   from './hooks'
 
 
 
@@ -13,9 +14,11 @@ const App = () => {
   /* Consts */
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
 
+  /* Custom Hooks */
+  const username = useField('text')
+  const password = useField('password')
+
   /* Defining States */
-  const [ username, setUsername ]         = useState('')
-  const [ password, setPassword ]         = useState('')
   const [ user, setUser ]                 = useState(null)
   const [ blogs, setBlogs ]               = useState([])
   const [ newTitle,   setNewTitle ]       = useState('')
@@ -63,16 +66,13 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username,
-        password
+        username: username.value,
+        password: password.value
       })
 
       window.localStorage.setItem(LOCALSTORAGE_LOGGEDUSER, JSON.stringify(user))
       blogsService.setToken(user.token)
       setUser(user)
-
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       arrangeNotification('Error: Can not log in', true)
       console.log(exception.response)
@@ -175,11 +175,11 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
+            <input name="Username" {...username} />
           </div>
           <div>
             password
-            <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
+            <input name="Password" {...password} />
           </div>
           <button type="submit">login</button>
         </form>
