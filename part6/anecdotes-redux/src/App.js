@@ -1,4 +1,6 @@
 import React from 'react';
+import { asObject } from './reducers/anecdoteReducer'
+
 
 const App = ( { store }) => {
   const anecdotes = store.getState()
@@ -9,6 +11,16 @@ const App = ( { store }) => {
       data: {
         id
       }
+    })
+  }
+
+  const create = (event) => {
+    event.preventDefault()
+    const content = event.target.content.value
+    event.target.content.value = ''
+    store.dispatch({
+      type: 'CREATE',
+      data: asObject(content)
     })
   }
 
@@ -27,9 +39,9 @@ const App = ( { store }) => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
-        <button>create</button>
+      <form onSubmit={create}>
+        <div><input name="content"/></div>
+        <button type="submit">create</button>
       </form>
     </div>
   )
