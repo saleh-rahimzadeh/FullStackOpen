@@ -24,20 +24,26 @@ const App = ( { store }) => {
     })
   }
 
+  const Display = () => {
+    return anecdotes
+      .sort((first, second) => second.votes - first.votes)
+      .map(anecdote =>
+          <div key={anecdote.id}>
+            <div>
+              {anecdote.content}
+            </div>
+            <div>
+              has {anecdote.votes}
+              <button onClick={() => vote(anecdote.id)}>vote</button>
+            </div>
+          </div>
+        )
+  }
+
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
-        <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
-          </div>
-        </div>
-      )}
+      {Display()}
       <h2>create new</h2>
       <form onSubmit={create}>
         <div><input name="content"/></div>
