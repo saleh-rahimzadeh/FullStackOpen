@@ -1,5 +1,6 @@
-import React from 'react';
-import { doCreate, doVote } from './reducers/anecdoteReducer'
+import React from 'react'
+import AnecdoteForm from './components/AnecdoteForm'
+import { doVote } from './reducers/anecdoteReducer'
 
 
 const App = ( { store }) => {
@@ -7,12 +8,6 @@ const App = ( { store }) => {
 
   const vote = (id) => {
     store.dispatch(doVote(id))
-  }
-
-  const create = (event) => {
-    event.preventDefault()
-    store.dispatch(doCreate(event.target.content.value))
-    event.target.content.value = ''
   }
 
   const Display = () => {
@@ -31,15 +26,13 @@ const App = ( { store }) => {
         )
   }
 
+
   return (
     <div>
       <h2>Anecdotes</h2>
       {Display()}
       <h2>create new</h2>
-      <form onSubmit={create}>
-        <div><input name="content"/></div>
-        <button type="submit">create</button>
-      </form>
+      <AnecdoteForm store={store} />
     </div>
   )
 }
