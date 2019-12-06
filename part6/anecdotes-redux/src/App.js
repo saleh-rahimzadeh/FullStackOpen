@@ -1,27 +1,18 @@
 import React from 'react';
-import { asObject } from './reducers/anecdoteReducer'
+import { doCreate, doVote } from './reducers/anecdoteReducer'
 
 
 const App = ( { store }) => {
   const anecdotes = store.getState()
 
   const vote = (id) => {
-    store.dispatch({
-      type: 'VOTE',
-      data: {
-        id
-      }
-    })
+    store.dispatch(doVote(id))
   }
 
   const create = (event) => {
     event.preventDefault()
-    const content = event.target.content.value
+    store.dispatch(doCreate(event.target.content.value))
     event.target.content.value = ''
-    store.dispatch({
-      type: 'CREATE',
-      data: asObject(content)
-    })
   }
 
   const Display = () => {
