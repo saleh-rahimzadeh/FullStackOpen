@@ -3,7 +3,7 @@ import { doVote } from '../reducers/anecdoteReducer'
 
 
 const AnecdoteList = ({ store }) => {
-  const anecdotes = store.getState()
+  const { anecdotes } = store.getState()
 
   const vote = (id) => {
     store.dispatch(doVote(id))
