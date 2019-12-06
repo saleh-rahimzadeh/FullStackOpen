@@ -8,7 +8,11 @@ const Notification = ({ store }) => {
     borderWidth: 1
   }
 
-  
+
+  if (!store.getState().notification || store.getState().notification === '') {
+    return null
+  }
+
   return (
     <div style={style}>
       {
