@@ -1,20 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { doVote } from '../reducers/anecdoteReducer'
 import { notification } from '../utils'
 
 
-const AnecdoteList = ({ store }) => {
-  const { anecdotes } = store.getState()
 
+const AnecdoteList = (props) => {
   const vote = (id, content) => {
-    store.dispatch(doVote(id))
-    notification(store, `You voted '${content}'`)
+    props.store.dispatch(doVote(id))
+    notification(props.store, `You voted '${content}'`)
   }
 
   const Display = () => {
-    return anecdotes
+    return props.anecdotes
       .sort((first, second) => second.votes - first.votes)
-      .filter(item => store.getState().filter === '' ? true : item.content.toUpperCase().includes(store.getState().filter.toUpperCase()))
+      .filter(item => props.filter === '' ? true : item.content.toUpperCase().includes(props.filter.toUpperCase()))
       .map(anecdote =>
           <div key={anecdote.id}>
             <div>
@@ -37,4 +37,17 @@ const AnecdoteList = ({ store }) => {
 }
 
 
-export default AnecdoteList
+
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
+
+
+
+export default connect(
+  mapStateToProps,
+  null
+)(AnecdoteList)

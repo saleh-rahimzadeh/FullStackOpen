@@ -9,7 +9,7 @@ const Notification = ({ store }) => {
   }
 
 
-  if (!store.getState().notification || store.getState().notification === '') {
+  if (!store || !store.getState().notification || store.getState().notification === '') {
     return null
   }
 
