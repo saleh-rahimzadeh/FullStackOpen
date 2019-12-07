@@ -2,13 +2,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { doVote } from '../reducers/anecdoteReducer'
 import { notification } from '../utils'
+import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
 
 
 
 const AnecdoteList = (props) => {
   const vote = (id, content) => {
-    props.store.dispatch(doVote(id))
-    notification(props.store, `You voted '${content}'`)
+    props.doVote(id)
+    notification(props, `You voted '${content}'`)
   }
 
   const Display = () => {
@@ -45,9 +46,15 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = {
+  doVote,
+  doNotice,
+  doNoticeClear
+}
+
 
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(AnecdoteList)
