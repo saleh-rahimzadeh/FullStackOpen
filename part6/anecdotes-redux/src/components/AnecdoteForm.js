@@ -1,16 +1,17 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { doCreate } from '../reducers/anecdoteReducer'
 import { notification } from '../utils'
 
 
-const AnecdoteForm = ({ store }) => {
+const AnecdoteForm = (props) => {
   const create = (event) => {
     event.preventDefault()
     const content = event.target.content.value
     event.target.content.value = ''
 
-    store.dispatch(doCreate(content))
-    notification(store, `You created '${content}'`)
+    props.doCreate(content)
+    notification(props.store, `You created '${content}'`)
   }
 
 
@@ -26,4 +27,12 @@ const AnecdoteForm = ({ store }) => {
 }
 
 
-export default AnecdoteForm
+const mapDispatchToProps = {
+  doCreate
+}
+
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AnecdoteForm)
