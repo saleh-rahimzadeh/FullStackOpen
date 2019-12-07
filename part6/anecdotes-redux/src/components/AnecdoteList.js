@@ -12,37 +12,35 @@ const AnecdoteList = (props) => {
     notification(props, `You voted '${content}'`)
   }
 
-  const Display = () => {
-    return props.anecdotes
-      .sort((first, second) => second.votes - first.votes)
-      .filter(item => props.filter === '' ? true : item.content.toUpperCase().includes(props.filter.toUpperCase()))
-      .map(anecdote =>
-          <div key={anecdote.id}>
-            <div>
-              {anecdote.content}
-            </div>
-            <div>
-              has {anecdote.votes}
-              <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
-            </div>
-          </div>
-        )
-  }
-
-
   return (
     <div>
-      {Display()}
+      {props.visibleAnecdotes.map(anecdote =>
+        <div key={anecdote.id}>
+          <div>
+            {anecdote.content}
+          </div>
+          <div>
+            has {anecdote.votes}
+            <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+          </div>
+        </div>
+      )}
     </div>
   )
+}
+
+
+const toDisplay = ({ anecdotes, filter }) => {
+  return anecdotes
+    .sort((first, second) => second.votes - first.votes)
+    .filter(item => filter === '' ? true : item.content.toUpperCase().includes(filter.toUpperCase()))
 }
 
 
 
 const mapStateToProps = (state) => {
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter
+    visibleAnecdotes: toDisplay(state)
   }
 }
 
