@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { doCreate } from '../reducers/anecdoteReducer'
-import { notification } from '../utils'
 import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
 
 
@@ -12,7 +11,7 @@ const AnecdoteForm = (props) => {
     event.target.content.value = ''
     
     props.doCreate(content)
-    notification(props, `You created '${content}'`)
+    props.doNotice(`You created '${content}'`, 5, props.doNoticeClear)
   }
 
 

@@ -1,17 +1,3 @@
-export const doNotice = message => {
-  return {
-    type: 'NOTICE',
-    message
-  }
-}
-
-export const doNoticeClear = () => {
-  return {
-    type: "NOTICE_CLEAR"
-  }
-}
-
-
 const notificationReducer = (state = '', action) => {
   switch (action.type) {
     case 'NOTICE':
@@ -20,6 +6,25 @@ const notificationReducer = (state = '', action) => {
       return ''
     default:
       return state
+  }
+}
+
+
+export const doNotice = (message, timer, propsDoNoticeClear) => {
+  return async dispatch => {
+    setTimeout(() => { propsDoNoticeClear() }, timer * 1000)
+    dispatch({
+      type: 'NOTICE',
+      message
+    })
+  }
+}
+
+export const doNoticeClear = () => {
+  return async dispatch => {
+    dispatch({
+      type: "NOTICE_CLEAR"
+    })
   }
 }
 

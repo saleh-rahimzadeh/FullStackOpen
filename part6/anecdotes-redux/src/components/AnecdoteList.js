@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { doVote } from '../reducers/anecdoteReducer'
-import { notification } from '../utils'
 import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
 
 
@@ -9,7 +8,7 @@ import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
 const AnecdoteList = (props) => {
   const vote = (anecdote) => {
     props.doVote(anecdote)
-    notification(props, `You voted '${anecdote.content}'`)
+    props.doNotice(`You voted '${anecdote.content}'`, 5, props.doNoticeClear)
   }
 
   return (
