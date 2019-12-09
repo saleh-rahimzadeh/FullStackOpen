@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { doCreate } from '../reducers/anecdoteReducer'
 import { notification } from '../utils'
 import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
-import anecdotesService from '../services/anecdotes'
 
 
 const AnecdoteForm = (props) => {
@@ -11,9 +10,8 @@ const AnecdoteForm = (props) => {
     event.preventDefault()
     const content = event.target.content.value
     event.target.content.value = ''
-
-    const newAnecdote = await anecdotesService.createNew(content)
-    props.doCreate(newAnecdote)
+    
+    props.doCreate(content)
     notification(props, `You created '${content}'`)
   }
 
