@@ -7,9 +7,9 @@ import { doNotice, doNoticeClear } from '../reducers/notificationReducer'
 
 
 const AnecdoteList = (props) => {
-  const vote = (id, content) => {
-    props.doVote(id)
-    notification(props, `You voted '${content}'`)
+  const vote = (anecdote) => {
+    props.doVote(anecdote)
+    notification(props, `You voted '${anecdote.content}'`)
   }
 
   return (
@@ -21,7 +21,7 @@ const AnecdoteList = (props) => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
