@@ -9,7 +9,7 @@ import {
 /* Components 
 --------------------------------------------------------------------------------------------------- */
 
-const Menu = ({ anecdotes, addNew }) => {
+const Menu = ({ anecdotes, addNew, notification, setNotification }) => {
   const padding = {
     paddingRight: 5
   }
@@ -21,8 +21,10 @@ const Menu = ({ anecdotes, addNew }) => {
         <Link to="/about" style={padding}>about</Link>
       </div>
 
+      <Notification notice={notification} />
+
       <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
-      <Route exact path="/create" render={() => <Create addNew={addNew} />} />
+      <Route exact path="/create" render={() => <Create addNew={addNew} setNotification={setNotification} />} />
       <Route exact path="/about" render={() => <About />} />
       <Route exact path="/anecdotes/:id" render={({ match }) =>
         <AnecdoteItem item={findById(anecdotes, match.params.id)} />}
@@ -78,12 +80,17 @@ const CreateNew = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     props.addNew({
       content,
       author,
       info,
       votes: 0
     })
+
+    props.setNotification(`a new anecdote ${content} created!`)
+    setTimeout(() => { props.setNotification(null) }, 10000)
+    
     props.history.push('/')
   }
 
@@ -120,6 +127,28 @@ const AnecdoteItem = ({ item }) => {
       <p>has {item.votes} votes</p>
       <p>for more info see <a href={item.info}>{item.info}</a></p>
     </div>
+  )
+}
+
+const Notification = ({ notice }) => {
+  if (notice === null || notice === undefined || notice === '') {
+    return null
+  }
+
+  const style = {
+    color: "green",
+    background: "lightgray",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  return (
+    <p style={style}>
+      {notice}
+    </p>
   )
 }
 
@@ -179,7 +208,7 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew} />
+      <Menu anecdotes={anecdotes} addNew={addNew} notification={notification} setNotification={setNotification} />
       <Footer />
     </div>
   )
