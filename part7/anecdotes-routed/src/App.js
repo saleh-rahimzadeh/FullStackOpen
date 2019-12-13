@@ -20,9 +20,13 @@ const Menu = ({ anecdotes, addNew }) => {
         <Link to="/create" style={padding}>create new</Link>
         <Link to="/about" style={padding}>about</Link>
       </div>
+
       <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
       <Route exact path="/create" render={() => <Create addNew={addNew} />} />
       <Route exact path="/about" render={() => <About />} />
+      <Route exact path="/anecdotes/:id" render={({ match }) =>
+        <AnecdoteItem item={findById(anecdotes, match.params.id)} />}
+      />
     </Router>
   )
 }
@@ -32,7 +36,11 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      )}
     </ul>
   </div>
 )
@@ -103,6 +111,26 @@ const CreateNew = (props) => {
 }
 
 const Create = withRouter(CreateNew)
+
+
+const AnecdoteItem = ({ item }) => {
+  return (
+    <div>
+      <h2>{item.content} by {item.author}</h2>
+      <p>has {item.votes} votes</p>
+      <p>for more info see <a href={item.info}>{item.info}</a></p>
+    </div>
+  )
+}
+
+
+
+/* Utiles
+--------------------------------------------------------------------------------------------------- */
+
+const findById = (anecdotes, id) => {
+  return anecdotes.find(item => item.id === id)
+}
 
 
 
