@@ -8,11 +8,12 @@ import Togglable               from './components/Togglable'
 import blogsService            from './services/blogs'
 import loginService            from './services/login'
 import { useField }            from './hooks'
-import { doNoticeSuccess, doNoticeError, doNoticeClear } from './reducers/notificationReducer'
+import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReducer'
+import { doNoticeSuccess, doNoticeError } from './reducers/notificationReducer'
 
 
 
-const App = (props) => {
+const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError }) => {
 
   /* Consts */
   const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
@@ -25,27 +26,16 @@ const App = (props) => {
   const newUrl    = useField('text')
 
   /* Defining States */
-  const [ user, setUser ]                 = useState(null)
-  const [ blogs, setBlogs ]               = useState([])
+  const [ user, setUser ] = useState(null)
   
   /* Component References */
   const newBlogFormRef = React.createRef()
 
 
-  /* Util Functions */
-  const saveBlogsAsSorted = (blogs) => {
-    setBlogs(blogs.sort((first, second) => second.likes - first.likes))
-  }
-
-
   /* Using Effect */
   useEffect(() => {
-    blogsService
-      .getAll()
-      .then(blogsData => {
-        saveBlogsAsSorted(blogsData)
-      })
-  }, [])
+    doInitialize(blogsService)
+  }, [doInitialize])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(LOCALSTORAGE_LOGGEDUSER)
@@ -74,7 +64,7 @@ const App = (props) => {
       username.reset()
       password.reset()
     } catch (exception) {
-      props.doNoticeError('Error: Can not log in')
+      doNoticeError('Error: Can not log in')
       console.log(exception.response)
     }
   }
@@ -89,49 +79,39 @@ const App = (props) => {
     event.preventDefault()
 
     try {
-      const blogData = await blogsService.create({
+      const blogData = {
         title: newTitle.value,
         author: newAuthor.value,
         url: newUrl.value
-      })
-      newBlogFormRef.current.toggleVisibility()
-      saveBlogsAsSorted(blogs.concat(blogData))
+      }
+      doCreate(blogsService, blogData)
 
+      newBlogFormRef.current.toggleVisibility()
       console.log('Blog created', blogData)
-      props.doNoticeSuccess(`A new blog ${blogData.title} by ${blogData.author} added`)
+      doNoticeSuccess(`A new blog ${blogData.title} by ${blogData.author} added`)
 
       newTitle.reset()
       newAuthor.reset()
       newUrl.reset()
     } catch (exception) {
-      props.doNoticeError('Error: Can not add new blog.')
+      doNoticeError('Error: Can not add new blog.')
       console.log(exception.response)
     }
   }
 
   const handleLikes = async (blog) => {
     try {
-      const blogData = await blogsService.update(blog.id, {
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
+      const blogData = { 
+        ...blog, 
         likes: (blog.likes + 1),
         user: blog.user.id
-      })
-
-      saveBlogsAsSorted(blogs.map(blogItem => {
-        if (blogItem.id !== blogData.id) {
-          return blogItem
-        } else {
-          blogItem.likes = blogData.likes
-          return blogItem
-        }
-      }))
+      }      
+      doUpdate(blogsService, blog.id, blogData, blog.user)
 
       console.log('Blog liked', blogData)
-      props.doNoticeSuccess(`The blog ${blogData.title} has liked to ${blogData.likes}.`)
+      doNoticeSuccess(`The blog ${blogData.title} has liked to ${blogData.likes}.`)
     } catch (exception) {
-      props.doNoticeError('Error: Can not like a blog.')
+      doNoticeError('Error: Can not like a blog.')
       console.log(exception.response)
     }
   }
@@ -139,14 +119,12 @@ const App = (props) => {
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
       try {
-        await blogsService.erase(blog.id)
+        doErase(blogsService, blog.id)
 
-        saveBlogsAsSorted(blogs.filter(blogItem => blogItem.id !== blog.id))
-
-        console.log('Blog removed', blog.id)
-        props.doNoticeSuccess(`The blog ${blog.title} has removed.`)
+        console.log('Blog removed', blog)
+        doNoticeSuccess(`The blog ${blog.title} has removed.`)
       } catch (exception) {
-        props.doNoticeError('Error: Can not remove a blog.')
+        doNoticeError('Error: Can not remove a blog.')
         console.log(exception.response)
       }
     }
@@ -211,10 +189,17 @@ const App = (props) => {
 
 
 export default connect(
-  null, 
+  (state) => {
+    return {
+      blogs: state.blogs.sort((first, second) => second.likes - first.likes)
+    }
+  }, 
   {
+    doInitialize,
+    doCreate,
+    doUpdate,
+    doErase,
     doNoticeSuccess, 
-    doNoticeError, 
-    doNoticeClear
+    doNoticeError
   }
 )(App)
