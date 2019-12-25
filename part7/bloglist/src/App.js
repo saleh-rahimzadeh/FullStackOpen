@@ -1,22 +1,20 @@
-import React                   from 'react'
-import { useState, useEffect } from 'react'
-import { connect }             from 'react-redux'
-import Blog                    from './components/Blog'
-import NewBlog                 from './components/NewBlog'
-import Notification            from './components/Notification'
-import Togglable               from './components/Togglable'
-import blogsService            from './services/blogs'
-import loginService            from './services/login'
-import { useField }            from './hooks'
+import React         from 'react'
+import { useEffect } from 'react'
+import { connect }   from 'react-redux'
+import Blog          from './components/Blog'
+import NewBlog       from './components/NewBlog'
+import Notification  from './components/Notification'
+import Togglable     from './components/Togglable'
+import blogsService  from './services/blogs'
+import loginService  from './services/login'
+import { useField }  from './hooks'
 import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReducer'
-import { doNoticeSuccess, doNoticeError } from './reducers/notificationReducer'
+import { doNoticeSuccess, doNoticeError }            from './reducers/notificationReducer'
+import { doAuthenticate, doLogin, doLogout }         from './reducers/userReducer'
 
 
 
-const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError }) => {
-
-  /* Consts */
-  const LOCALSTORAGE_LOGGEDUSER = 'BloglistLoggedUser'
+const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError, doAuthenticate, doLogin, doLogout }) => {
 
   /* Custom Hooks */
   const username  = useField('text')
@@ -24,9 +22,6 @@ const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess
   const newTitle  = useField('text')
   const newAuthor = useField('text')
   const newUrl    = useField('text')
-
-  /* Defining States */
-  const [ user, setUser ] = useState(null)
   
   /* Component References */
   const newBlogFormRef = React.createRef()
@@ -38,13 +33,8 @@ const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess
   }, [doInitialize])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem(LOCALSTORAGE_LOGGEDUSER)
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogsService.setToken(user.token)
-    }
-  }, [])
+    doAuthenticate(blogsService)
+  }, [doAuthenticate])
 
 
   /* Event Handlers */
@@ -52,14 +42,10 @@ const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess
     event.preventDefault()
 
     try {
-      const user = await loginService.login({
+      doLogin(blogsService, loginService, {
         username: username.value,
         password: password.value
       })
-
-      window.localStorage.setItem(LOCALSTORAGE_LOGGEDUSER, JSON.stringify(user))
-      blogsService.setToken(user.token)
-      setUser(user)
 
       username.reset()
       password.reset()
@@ -70,9 +56,7 @@ const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem(LOCALSTORAGE_LOGGEDUSER)
-    blogsService.setToken(null)
-    setUser(null)
+    doLogout(blogsService)
   }
 
   const addBlog_onSubmit = async (event) => {
@@ -191,7 +175,8 @@ const App = ({ blogs, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess
 export default connect(
   (state) => {
     return {
-      blogs: state.blogs.sort((first, second) => second.likes - first.likes)
+      blogs: state.blogs.sort((first, second) => second.likes - first.likes),
+      user: state.user
     }
   }, 
   {
@@ -200,6 +185,9 @@ export default connect(
     doUpdate,
     doErase,
     doNoticeSuccess, 
-    doNoticeError
+    doNoticeError,
+    doAuthenticate, 
+    doLogin, 
+    doLogout
   }
 )(App)
