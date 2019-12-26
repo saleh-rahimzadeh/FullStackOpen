@@ -5,16 +5,20 @@ import Blog          from './components/Blog'
 import NewBlog       from './components/NewBlog'
 import Notification  from './components/Notification'
 import Togglable     from './components/Togglable'
+import Users         from './components/Users'
 import blogsService  from './services/blogs'
 import loginService  from './services/login'
+import usersService  from './services/users'
 import { useField }  from './hooks'
 import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReducer'
 import { doNoticeSuccess, doNoticeError }            from './reducers/notificationReducer'
 import { doAuthenticate, doLogin, doLogout }         from './reducers/userReducer'
+import { doLoadUsers }                               from './reducers/usersReducer'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 
 
-const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError, doAuthenticate, doLogin, doLogout }) => {
+const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError, doAuthenticate, doLogin, doLogout, doLoadUsers }) => {
 
   /* Custom Hooks */
   const username  = useField('text')
@@ -33,8 +37,14 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   }, [doInitialize])
 
   useEffect(() => {
+    doLoadUsers(usersService)
+  }, [doLoadUsers])
+
+  useEffect(() => {
     doAuthenticate(blogsService)
   }, [doAuthenticate])
+
+  
 
 
   /* Event Handlers */
@@ -145,27 +155,32 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   }
 
   return (
-    <div>
+    <Router>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
 
       <Notification />
 
-      <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
-        <NewBlog
-          title={newTitle.value}
-          author={newAuthor.value}
-          url={newUrl.value}
-          newTitleEventHandler={newTitle.onChange}
-          newAuthorEventHandler={newAuthor.onChange}
-          newUrlEventHandler={newUrl.onChange}
-          newBlogEventHandler={addBlog_onSubmit} />
-      </Togglable>
+      <Route exact path="/" render={() => 
+        <>
+          <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
+            <NewBlog
+              title={newTitle.value}
+              author={newAuthor.value}
+              url={newUrl.value}
+              newTitleEventHandler={newTitle.onChange}
+              newAuthorEventHandler={newAuthor.onChange}
+              newUrlEventHandler={newUrl.onChange}
+              newBlogEventHandler={addBlog_onSubmit} />
+          </Togglable>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} user={user.username} likesEventHandler={() => handleLikes(blog)} removeEventHandler={() => handleRemove(blog)} />
+          )}
+        </>
+      } />
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user.username} likesEventHandler={() => handleLikes(blog)} removeEventHandler={() => handleRemove(blog)} />
-      )}
-    </div>
+      <Route exact path="/users" render={() => <Users />} />
+    </Router>
   )
 
 }
@@ -176,7 +191,7 @@ export default connect(
   (state) => {
     return {
       blogs: state.blogs.sort((first, second) => second.likes - first.likes),
-      user: state.user
+      user:  state.user
     }
   }, 
   {
@@ -188,6 +203,7 @@ export default connect(
     doNoticeError,
     doAuthenticate, 
     doLogin, 
-    doLogout
+    doLogout,
+    doLoadUsers
   }
 )(App)
