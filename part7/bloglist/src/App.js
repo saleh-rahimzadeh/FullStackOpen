@@ -15,7 +15,7 @@ import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReduc
 import { doNoticeSuccess, doNoticeError }            from './reducers/notificationReducer'
 import { doAuthenticate, doLogin, doLogout }         from './reducers/userReducer'
 import { doLoadUsers }                               from './reducers/usersReducer'
-import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, withRouter, Link } from 'react-router-dom'
 
 
 
@@ -157,8 +157,13 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
 
   return (
     <Router>
-      <h2>blogs</h2>
-      <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
+      <h1>blog app</h1>      
+
+      <div className="navigation">
+        <Link to="/">blogs</Link>
+        <Link to="/users">users</Link>
+        <span>{user.name} logged in <button onClick={handleLogout}>Logout</button></span>
+      </div>
 
       <Notification />
 

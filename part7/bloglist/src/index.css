@@ -1,3 +1,11 @@
+.navigation {
+	background-color: lightgray;
+	margin-bottom: 20px;
+}
+.navigation > * {
+	margin: 5px;
+}
+
 .success {
 	color: green;
 	background: lightgray;
