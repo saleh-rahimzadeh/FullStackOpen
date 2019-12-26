@@ -6,6 +6,7 @@ import NewBlog       from './components/NewBlog'
 import Notification  from './components/Notification'
 import Togglable     from './components/Togglable'
 import Users         from './components/Users'
+import BlogItem      from './components/BlogItem'
 import blogsService  from './services/blogs'
 import loginService  from './services/login'
 import usersService  from './services/users'
@@ -14,7 +15,7 @@ import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReduc
 import { doNoticeSuccess, doNoticeError }            from './reducers/notificationReducer'
 import { doAuthenticate, doLogin, doLogout }         from './reducers/userReducer'
 import { doLoadUsers }                               from './reducers/usersReducer'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom'
 
 
 
@@ -174,17 +175,22 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
               newBlogEventHandler={addBlog_onSubmit} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} user={user.username} likesEventHandler={() => handleLikes(blog)} removeEventHandler={() => handleRemove(blog)} />
+            <Blog key={blog.id} blog={blog} />
           )}
         </>
       } />
 
       <Route exact path="/users" render={() => <Users />} />
+      <Route exact path="/blogs/:id" render={({ match }) => 
+        <BlogItemRouted blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} />
+      } />
     </Router>
   )
 
 }
 
+
+const BlogItemRouted = withRouter(BlogItem)
 
 
 export default connect(

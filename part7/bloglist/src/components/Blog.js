@@ -1,14 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 
-
-const Blog = ({ blog, user, likesEventHandler, removeEventHandler }) => {
-  const [visible, setVisible] = useState(false)
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
+const Blog = ({ blog }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -24,39 +18,14 @@ const Blog = ({ blog, user, likesEventHandler, removeEventHandler }) => {
     fontSize: 18
   }
 
-  const visibilityStyle = {
-    display: visible ? '' : 'none'
-  }
-
-
   return (
     <div style={blogStyle}>
-
-      <div onClick={toggleVisibility} style={titleStyle}>
-        {blog.title} - {blog.author}
+      <div style={titleStyle}>
+        <Link to={`/blogs/${blog.id}`}>{blog.title} - {blog.author}</Link>        
       </div>
-
-      <div style={visibilityStyle} className="blog-content">
-        <div>
-          {blog.url}
-        </div>
-        <div>
-          {blog.likes} likes <button onClick={likesEventHandler}>like</button>
-        </div>
-        <div>
-          added by {blog.user.name}
-        </div>
-        <div>
-          {
-            blog.user.username === user ? <button onClick={removeEventHandler}>Remove</button> : null
-          }
-        </div>
-      </div>
-
     </div>
   )
 }
-
 
 
 export default Blog
