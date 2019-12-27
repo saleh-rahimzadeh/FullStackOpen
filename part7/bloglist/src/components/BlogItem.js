@@ -24,6 +24,12 @@ const BlogItem = ({ blog, user, likesEventHandler, removeEventHandler, history }
 	            blog.user.username === user ? <button onClick={() => { removeEventHandler(blog) }}>Remove</button> : null
 	          }
 	        </div>
+	        <h3>Comments</h3>
+	        <ul>
+	        {
+	        	blog.comments.map(comment => <li key={comment.id}>{comment.text}</li>)
+	        }
+	        </ul>
 		</>
 	)
 }
