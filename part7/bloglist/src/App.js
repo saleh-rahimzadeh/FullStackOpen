@@ -1,32 +1,34 @@
-import React         from 'react'
-import { useEffect } from 'react'
-import { connect }   from 'react-redux'
-import Blog          from './components/Blog'
-import NewBlog       from './components/NewBlog'
-import Notification  from './components/Notification'
-import Togglable     from './components/Togglable'
-import Users         from './components/Users'
-import BlogItem      from './components/BlogItem'
-import blogsService  from './services/blogs'
-import loginService  from './services/login'
-import usersService  from './services/users'
-import { useField }  from './hooks'
-import { doInitialize, doCreate, doUpdate, doErase } from './reducers/blogsReducer'
-import { doNoticeSuccess, doNoticeError }            from './reducers/notificationReducer'
-import { doAuthenticate, doLogin, doLogout }         from './reducers/userReducer'
-import { doLoadUsers }                               from './reducers/usersReducer'
-import { BrowserRouter as Router, Route, withRouter, Link } from 'react-router-dom'
+import React           from 'react'
+import { useEffect }   from 'react'
+import { connect }     from 'react-redux'
+import Blog            from './components/Blog'
+import NewBlog         from './components/NewBlog'
+import Notification    from './components/Notification'
+import Togglable       from './components/Togglable'
+import Users           from './components/Users'
+import BlogItem        from './components/BlogItem'
+import blogsService    from './services/blogs'
+import loginService    from './services/login'
+import usersService    from './services/users'
+import commentsService from './services/comments'
+import { useField }    from './hooks'
+import { doInitialize, doCreate, doUpdate, doErase,doNewComment } from './reducers/blogsReducer'
+import { doNoticeSuccess, doNoticeError }       from './reducers/notificationReducer'
+import { doAuthenticate, doLogin, doLogout }    from './reducers/userReducer'
+import { doLoadUsers }                          from './reducers/usersReducer'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 
 
-const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError, doAuthenticate, doLogin, doLogout, doLoadUsers }) => {
+const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeSuccess, doNoticeError, doAuthenticate, doLogin, doLogout, doLoadUsers, doNewComment }) => {
 
   /* Custom Hooks */
-  const username  = useField('text')
-  const password  = useField('password')
-  const newTitle  = useField('text')
-  const newAuthor = useField('text')
-  const newUrl    = useField('text')
+  const username   = useField('text')
+  const password   = useField('password')
+  const newTitle   = useField('text')
+  const newAuthor  = useField('text')
+  const newUrl     = useField('text')
+  const newComment = useField('text')
   
   /* Component References */
   const newBlogFormRef = React.createRef()
@@ -44,8 +46,6 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   useEffect(() => {
     doAuthenticate(blogsService)
   }, [doAuthenticate])
-
-  
 
 
   /* Event Handlers */
@@ -80,6 +80,7 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
         url: newUrl.value
       }
       doCreate(blogsService, blogData)
+      doLoadUsers(usersService)
 
       newBlogFormRef.current.toggleVisibility()
       console.log('Blog created', blogData)
@@ -122,6 +123,23 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
         doNoticeError('Error: Can not remove a blog.')
         console.log(exception.response)
       }
+    }
+  }
+
+  const handleNewComment = async (bid) => {
+    try {
+      const commentData = {
+        text: newComment.value
+      }
+      doNewComment(commentsService, bid, commentData)
+
+      console.log('Comment created', commentData)
+      doNoticeSuccess(`A new comment added`)
+
+      newComment.reset()
+    } catch (exception) {
+      doNoticeError('Error: Can not add new blog.')
+      console.log(exception.response)
     }
   }
 
@@ -187,15 +205,12 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
 
       <Route exact path="/users" render={() => <Users />} />
       <Route exact path="/blogs/:id" render={({ match }) => 
-        <BlogItemRouted blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} />
+        <BlogItem blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} newCommentEventHandler={handleNewComment} newCommentChangeEventHandler={newComment.onChange} newComment={newComment.value} />
       } />
     </Router>
   )
 
 }
-
-
-const BlogItemRouted = withRouter(BlogItem)
 
 
 export default connect(
@@ -215,6 +230,7 @@ export default connect(
     doAuthenticate, 
     doLogin, 
     doLogout,
-    doLoadUsers
+    doLoadUsers,
+    doNewComment
   }
 )(App)

@@ -87,14 +87,14 @@ blogsRouter.put(uri.API_ID_URI, async (request, response, next) => {
   }
 
   const blog = {
-    title  : body.title,
-    author : body.author,
-    url    : body.url,
-    likes  : body.likes
+    title    : body.title,
+    author   : body.author,
+    url      : body.url,
+    likes    : body.likes
   }
 
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('comments', { id: 1, text: 1 })
     if (updatedBlog) {
       response.status(201).json(updatedBlog.toJSON())
     } else {

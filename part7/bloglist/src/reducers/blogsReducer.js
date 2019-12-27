@@ -9,9 +9,19 @@ const blogsReducer = (state = [], action) => {
             return state.map(item => item.id !== id ? item : action.data.updatedBlog)
         case 'ERASE':
             return state.filter(item => item.id !== action.data)
+        case 'NEW_COMMENT':
+            const bid = action.data.bid
+            return state.map(item => item.id !== bid ? item : appendComment(item, action.data.comment))
         default:
             return state
     }
+}
+
+
+const appendComment = (blog, comment) => {
+    const clonedBlog = Object.assign({}, blog)
+    clonedBlog.comments = clonedBlog.comments.concat({ text: comment.text, id: comment.id }) 
+    return clonedBlog
 }
 
 
@@ -55,6 +65,19 @@ export const doErase = (blogsService, id) => {
         dispatch({
             type: 'ERASE',
             data: id
+        })
+    }
+}
+
+export const doNewComment = (commentsService, bid, commentData) => {
+    return async dispatch => {
+        const newComment = await commentsService.create(bid, commentData)
+        dispatch({
+            type: 'NEW_COMMENT',
+            data: {
+                comment: newComment,
+                bid
+            }
         })
     }
 }

@@ -1,10 +1,14 @@
 import React from 'react'
 
 
-const BlogItem = ({ blog, user, likesEventHandler, removeEventHandler, history }) => {
+const BlogItem = ({ blog, user, likesEventHandler, removeEventHandler, newCommentEventHandler, newCommentChangeEventHandler, newComment }) => {
 	if (blog === undefined) {
-		history.push('/')
 		return null
+	}
+
+	const handleNewComment = (event) => {
+		event.preventDefault(); 
+		newCommentEventHandler(blog.id)
 	}
 
 	return (
@@ -25,9 +29,14 @@ const BlogItem = ({ blog, user, likesEventHandler, removeEventHandler, history }
 	          }
 	        </div>
 	        <h3>Comments</h3>
+	        <div>
+	        	<form onSubmit={handleNewComment}>
+		          <input value={newComment} onChange={newCommentChangeEventHandler} /><button type="submit">add comment</button>
+			    </form>
+	        </div>
 	        <ul>
 	        {
-	        	blog.comments.map(comment => <li key={comment.id}>{comment.text}</li>)
+	        	blog.comments.map(item => <li key={item.id}>{item.text}</li>)
 	        }
 	        </ul>
 		</>
