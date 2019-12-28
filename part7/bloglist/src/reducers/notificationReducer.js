@@ -6,20 +6,20 @@ const initialState = {
 
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'NOTICE_SUCCESS':
-      return {
-        message: action.message,
-        isError: false
-      }
-    case 'NOTICE_ERROR':
-      return {
-        message: action.message,
-        isError: true
-      }
-    case 'NOTICE_CLEAR':
-      return {...initialState}
-    default:
-      return state
+  case 'NOTICE_SUCCESS':
+    return {
+      message: action.message,
+      isError: false
+    }
+  case 'NOTICE_ERROR':
+    return {
+      message: action.message,
+      isError: true
+    }
+  case 'NOTICE_CLEAR':
+    return { ...initialState }
+  default:
+    return state
   }
 }
 
@@ -30,12 +30,12 @@ export const doNoticeSuccess = (message) => {
       type: 'NOTICE_SUCCESS',
       message
     })
-    setTimeout(() => { 
-        dispatch({
-            type: 'NOTICE_CLEAR',
-        }) 
-      }, 
-      5000
+    setTimeout(() => {
+      dispatch({
+        type: 'NOTICE_CLEAR',
+      })
+    },
+    5000
     )
   }
 }
@@ -46,21 +46,21 @@ export const doNoticeError = (message) => {
       type: 'NOTICE_ERROR',
       message
     })
-    setTimeout(() => { 
-        dispatch({
-            type: 'NOTICE_CLEAR',
-        }) 
-      }, 
-      5000
+    setTimeout(() => {
+      dispatch({
+        type: 'NOTICE_CLEAR',
+      })
+    },
+    5000
     )
   }
 }
-  
+
 export const doNoticeClear = () => (
   {
-      type: "NOTICE_CLEAR"
+    type: 'NOTICE_CLEAR'
   }
 )
-  
+
 
 export default notificationReducer

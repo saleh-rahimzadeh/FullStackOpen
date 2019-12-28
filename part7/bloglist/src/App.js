@@ -30,7 +30,7 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   const newAuthor  = useField('text')
   const newUrl     = useField('text')
   const newComment = useField('text')
-  
+
   /* Component References */
   const newBlogFormRef = React.createRef()
 
@@ -98,11 +98,11 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
 
   const handleLikes = async (blog) => {
     try {
-      const blogData = { 
-        ...blog, 
+      const blogData = {
+        ...blog,
         likes: (blog.likes + 1),
         user: blog.user.id
-      }      
+      }
       doUpdate(blogsService, blog.id, blogData, blog.user)
 
       console.log('Blog liked', blogData)
@@ -135,7 +135,7 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
       doNewComment(commentsService, bid, commentData)
 
       console.log('Comment created', commentData)
-      doNoticeSuccess(`A new comment added`)
+      doNoticeSuccess('A new comment added')
 
       newComment.reset()
     } catch (exception) {
@@ -155,14 +155,14 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   if (user === null) {
     return (
       <Container>
-        <h1 className="app-name">blog app</h1> 
+        <h1 className="app-name">blog app</h1>
         <h2>Log in to application</h2>
 
         <Notification />
 
         <Form onSubmit={handleLogin}>
           <Form.Field>
-          <label>username</label>
+            <label>username</label>
             <input name="Username" {...usernameProps} />
           </Form.Field>
           <Form.Field>
@@ -178,11 +178,11 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   return (
     <Router>
       <Container>
-        <h1 className="app-name">blog app</h1>      
+        <h1 className="app-name">blog app</h1>
 
         <Menu inverted>
           <Menu.Item link>
-          <Link to="/">blogs</Link>
+            <Link to="/">blogs</Link>
           </Menu.Item>
           <Menu.Item link>
             <Link to="/users">users</Link>
@@ -194,7 +194,7 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
 
         <Notification />
 
-        <Route exact path="/" render={() => 
+        <Route exact path="/" render={() =>
           <>
             <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
               <NewBlog
@@ -221,7 +221,7 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
         } />
 
         <Route exact path="/users" render={() => <Users />} />
-        <Route exact path="/blogs/:id" render={({ match }) => 
+        <Route exact path="/blogs/:id" render={({ match }) =>
           <BlogItem blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} newCommentEventHandler={handleNewComment} newCommentChangeEventHandler={newComment.onChange} newComment={newComment.value} />
         } />
       </Container>
@@ -237,16 +237,16 @@ export default connect(
       blogs: state.blogs.sort((first, second) => second.likes - first.likes),
       user:  state.user
     }
-  }, 
+  },
   {
     doInitialize,
     doCreate,
     doUpdate,
     doErase,
-    doNoticeSuccess, 
+    doNoticeSuccess,
     doNoticeError,
-    doAuthenticate, 
-    doLogin, 
+    doAuthenticate,
+    doLogin,
     doLogout,
     doLoadUsers,
     doNewComment

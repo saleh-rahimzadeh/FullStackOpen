@@ -7,7 +7,7 @@ const Blog = ({ blog }) => {
   return (
     <Table.Row>
       <Table.Cell>
-        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> 
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
       </Table.Cell>
       <Table.Cell>
         {blog.author}
