@@ -1,27 +1,7 @@
-.navigation {
-	background-color: lightgray;
-	margin-bottom: 20px;
-}
-.navigation > * {
-	margin: 5px;
-}
-
-.success {
-	color: green;
-	background: lightgray;
-	font-size: 20px;
-	border-style: solid;
-	border-radius: 5px;
+.app-name {
+	background-color: #a333c8;
+	color: white;
 	padding: 10px;
-	margin-bottom: 10px;
-}
-
-.error {
-	color: red;
-	background: lightgray;
-	font-size: 20px;
-	border-style: solid;
-	border-radius: 5px;
-	padding: 10px;
-	margin-bottom: 10px;
+	margin-top: 10px;
+	text-align: center;
 }

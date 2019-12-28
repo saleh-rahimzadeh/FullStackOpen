@@ -17,6 +17,7 @@ import { doNoticeSuccess, doNoticeError }       from './reducers/notificationRed
 import { doAuthenticate, doLogin, doLogout }    from './reducers/userReducer'
 import { doLoadUsers }                          from './reducers/usersReducer'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Container, Table, Form, Button, Menu } from 'semantic-ui-react'
 
 
 
@@ -153,60 +154,77 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
   /* Rendering Components */
   if (user === null) {
     return (
-      <div>
+      <Container>
+        <h1 className="app-name">blog app</h1> 
         <h2>Log in to application</h2>
 
         <Notification />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            username
+        <Form onSubmit={handleLogin}>
+          <Form.Field>
+          <label>username</label>
             <input name="Username" {...usernameProps} />
-          </div>
-          <div>
-            password
+          </Form.Field>
+          <Form.Field>
+            <label>password</label>
             <input name="Password" {...passwordProps} />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
+          </Form.Field>
+          <Button type="submit" color='blue'>login</Button>
+        </Form>
+      </Container>
     )
   }
 
   return (
     <Router>
-      <h1>blog app</h1>      
+      <Container>
+        <h1 className="app-name">blog app</h1>      
 
-      <div className="navigation">
-        <Link to="/">blogs</Link>
-        <Link to="/users">users</Link>
-        <span>{user.name} logged in <button onClick={handleLogout}>Logout</button></span>
-      </div>
+        <Menu inverted>
+          <Menu.Item link>
+          <Link to="/">blogs</Link>
+          </Menu.Item>
+          <Menu.Item link>
+            <Link to="/users">users</Link>
+          </Menu.Item>
+          <Menu.Item>
+            <span>{user.name} logged in <Button onClick={handleLogout} color='brown'>Logout</Button></span>
+          </Menu.Item>
+        </Menu>
 
-      <Notification />
+        <Notification />
 
-      <Route exact path="/" render={() => 
-        <>
-          <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
-            <NewBlog
-              title={newTitle.value}
-              author={newAuthor.value}
-              url={newUrl.value}
-              newTitleEventHandler={newTitle.onChange}
-              newAuthorEventHandler={newAuthor.onChange}
-              newUrlEventHandler={newUrl.onChange}
-              newBlogEventHandler={addBlog_onSubmit} />
-          </Togglable>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </>
-      } />
+        <Route exact path="/" render={() => 
+          <>
+            <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
+              <NewBlog
+                title={newTitle.value}
+                author={newAuthor.value}
+                url={newUrl.value}
+                newTitleEventHandler={newTitle.onChange}
+                newAuthorEventHandler={newAuthor.onChange}
+                newUrlEventHandler={newUrl.onChange}
+                newBlogEventHandler={addBlog_onSubmit} />
+            </Togglable>
 
-      <Route exact path="/users" render={() => <Users />} />
-      <Route exact path="/blogs/:id" render={({ match }) => 
-        <BlogItem blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} newCommentEventHandler={handleNewComment} newCommentChangeEventHandler={newComment.onChange} newComment={newComment.value} />
-      } />
+
+            <Table striped celled>
+              <Table.Body>
+                {blogs.map(blog =>
+                  <Blog key={blog.id} blog={blog} />
+                )}
+              </Table.Body>
+            </Table>
+
+
+          </>
+        } />
+
+        <Route exact path="/users" render={() => <Users />} />
+        <Route exact path="/blogs/:id" render={({ match }) => 
+          <BlogItem blog={blogs.find(item => item.id === match.params.id)} user={user.username} likesEventHandler={handleLikes} removeEventHandler={handleRemove} newCommentEventHandler={handleNewComment} newCommentChangeEventHandler={newComment.onChange} newComment={newComment.value} />
+        } />
+      </Container>
     </Router>
   )
 

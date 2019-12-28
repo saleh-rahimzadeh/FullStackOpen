@@ -1,5 +1,6 @@
 import React       from 'react'
 import { connect } from 'react-redux'
+import { Container, Message } from 'semantic-ui-react'
 
 
 const Notification = (props) => {
@@ -8,9 +9,11 @@ const Notification = (props) => {
   }
 
   return (
-    <p className={props.isError === true ? 'error' : 'success'}>
-      {props.message}
-    </p>
+    <Container>
+      {
+        props.isError === true ? <Message error>{props.message}</Message> : <Message success>{props.message}</Message>
+      }
+    </Container>
   )
 }
 
