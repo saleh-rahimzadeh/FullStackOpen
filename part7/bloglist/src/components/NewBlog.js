@@ -10,13 +10,13 @@ const NewBlog = ({ title, author, url, newTitleEventHandler, newAuthorEventHandl
       <h2>create new</h2>
       <Form onSubmit={newBlogEventHandler}>
         <Form.Field>
-          <label>Title:</label> <input value={title} onChange={newTitleEventHandler} />
+          <label>Title:</label> <input id="new-title" value={title} onChange={newTitleEventHandler} />
         </Form.Field>
         <Form.Field>
-          <label>Author:</label> <input value={author} onChange={newAuthorEventHandler} />
+          <label>Author:</label> <input id="new-author" value={author} onChange={newAuthorEventHandler} />
         </Form.Field>
         <Form.Field>
-          <label>Url:</label> <input value={url} onChange={newUrlEventHandler} />
+          <label>Url:</label> <input id="new-url" value={url} onChange={newUrlEventHandler} />
         </Form.Field>
         <Form.Field>
           <Button type="submit" color='green'>Create</Button>

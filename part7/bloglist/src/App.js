@@ -163,11 +163,11 @@ const App = ({ blogs, user, doInitialize, doCreate, doUpdate, doErase, doNoticeS
         <Form onSubmit={handleLogin}>
           <Form.Field>
             <label>username</label>
-            <input name="Username" {...usernameProps} />
+            <input id="username" name="Username" {...usernameProps} />
           </Form.Field>
           <Form.Field>
             <label>password</label>
-            <input name="Password" {...passwordProps} />
+            <input id="password" name="Password" {...passwordProps} />
           </Form.Field>
           <Button type="submit" color='blue'>login</Button>
         </Form>
