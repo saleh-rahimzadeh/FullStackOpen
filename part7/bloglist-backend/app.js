@@ -38,6 +38,11 @@ app.use(uri.API_USERS_URI, require('./controllers/users'))
 app.use(uri.API_BLOGS_URI, require('./controllers/blogs'))
 app.use(uri.API_BLOGS_URI, require('./controllers/comments'))
 
+// Testing Middleware
+if (process.env.NODE_ENV === 'test') {
+  app.use(uri.API_TESTING_URI, require('./controllers/testing'))
+}
+
 // Post Middlewares
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
