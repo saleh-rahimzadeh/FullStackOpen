@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import UpdateAuthor from './components/UpdateAuthor'
 
 
 
@@ -48,6 +49,23 @@ const MUTATION_CREATE_BOOK = gql`
   }
 `
 
+const MUTATION_EDIT_AUTHOR = gql`
+  mutation editAuthor(
+    $name: String!,
+    $born: Int!
+  )
+  {
+    editAuthor(
+      name: $name,
+      setBornTo: $born
+    )
+    {
+      name
+      born
+    }
+  }
+`
+
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -67,6 +85,10 @@ const App = () => {
     onError: handleError,
     refetchQueries: [{ query: QUERY_ALL_BOOKS }, { query: QUERY_ALL_AUTHORS }]
   })
+  const [editAuthor] = useMutation(MUTATION_EDIT_AUTHOR, {
+    onError: handleError,
+    refetchQueries: [{ query: QUERY_ALL_AUTHORS }]
+  })
 
 
   return (
@@ -75,6 +97,7 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={() => setPage('editAuthor')}>edit author</button>
       </div>
 
       {
@@ -95,6 +118,11 @@ const App = () => {
       <NewBook
         show={page === 'add'}
         addBook={addBook}
+      />
+
+      <UpdateAuthor
+        show={page === 'editAuthor'}
+        editAuthor={editAuthor}
       />
 
     </div>
