@@ -9,6 +9,12 @@ const UpdateAuthor = (props) => {
     return null
   }
 
+  if (props.result.loading) {
+    return <div>loading...</div>
+  }
+
+  const authors = props.result.data.allAuthors
+
   const submit = async (e) => {
     e.preventDefault()
 
@@ -23,16 +29,21 @@ const UpdateAuthor = (props) => {
     setBorn(Number(0))
   }
 
+  const authorChange = async ({ target }) => {
+    setName(target.value)
+  }
+
 
   return (
     <div>
       <form onSubmit={submit}>
         <div>
           name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          <select value={name} onChange={authorChange}>
+            {
+              authors.map(a => <option key={a.name} value={a.name}>{a.name}</option>)
+            }
+          </select>
         </div>
         <div>
           born

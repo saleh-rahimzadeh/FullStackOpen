@@ -123,6 +123,7 @@ const App = () => {
       <UpdateAuthor
         show={page === 'editAuthor'}
         editAuthor={editAuthor}
+        result={authors}
       />
 
     </div>
