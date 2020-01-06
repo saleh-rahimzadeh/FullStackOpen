@@ -94,30 +94,49 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      let author = await Author.findOne({ name: args.author })
-      if (!author) {
-        author = new Author({ 
-          name: args.author
-        })
-        author = await author.save()
+      if (!args.author) {
+        throw new UserInputError("Author is required")
       }
-      const book = new Book({ 
-        title: args.title, 
-        published: args.published, 
-        genres: args.genres, 
-        author: author._id
-      })
-      await book.save()
-      return book
+      if (args.title.length < 2) {
+        throw new UserInputError("Title must be at least 2 character")
+      }
+
+      try {
+        let author = await Author.findOne({ name: args.author })
+        if (!author) {
+          author = new Author({ 
+            name: args.author
+          })
+          author = await author.save()
+        }
+        const book = new Book({ 
+          title: args.title, 
+          published: args.published, 
+          genres: args.genres, 
+          author: author._id
+        })
+        await book.save()
+        return book
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     },
     editAuthor: async (root, args) => {
-      const author = await Author.findOne({ name: args.name })
-      if (!author) {
-        return null
+      try {
+        const author = await Author.findOne({ name: args.name })
+        if (!author) {
+          return null
+        }
+        author.born = args.setBornTo
+        author.save()
+        return author
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
-      author.born = args.setBornTo
-      author.save()
-      return author
     }
   }
 }
