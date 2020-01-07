@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import UpdateAuthor from './components/UpdateAuthor'
+import LoginForm from './components/LoginForm'
 
 
 
@@ -45,8 +46,7 @@ const MUTATION_CREATE_BOOK = gql`
       published: $published,
       genres: $genres
     ) {
-      title,
-      author
+      title
     }
   }
 `
@@ -68,10 +68,21 @@ const MUTATION_EDIT_AUTHOR = gql`
   }
 `
 
+const MUTATION_LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password)  {
+      value
+    }
+  }
+`
+
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [token, setToken] = useState(null)
+
+  const client = useApolloClient()
 
   const handleError = (error) => {
     setErrorMessage(error.message)
@@ -91,6 +102,34 @@ const App = () => {
     onError: handleError,
     refetchQueries: [{ query: QUERY_ALL_AUTHORS }]
   })
+  const [login] = useMutation(MUTATION_LOGIN, {
+    onError: handleError
+  })
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
+  }
+
+  const errorNotification = () => errorMessage &&
+    <div style={{ color: 'red' }}>
+      {errorMessage}
+    </div>
+
+
+  if (!token) {
+    return (
+      <div>
+        {errorNotification()}
+        <h2>Login</h2>
+        <LoginForm
+          login={login}
+          setToken={(token) => setToken(token)}
+        />
+      </div>
+    )
+  }
 
 
   return (
@@ -100,14 +139,10 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={() => setPage('editAuthor')}>edit author</button>
+        <button onClick={logout}>logout</button>
       </div>
 
-      {
-        errorMessage &&
-        <div style={{ color: 'red' }}>
-          {errorMessage}
-        </div>
-      }
+      {errorNotification()}
 
       <Authors
         show={page === 'authors'} result={authors}
