@@ -1,14 +1,6 @@
 import React, { useState } from 'react'
+import BookItem from './BookItem'
 
-const BookItem = ({ title, author, published }) => {
-  return (
-    <tr>
-      <td>{title}</td>
-      <td>{author}</td>
-      <td>{published}</td>
-    </tr>
-  )
-}
 
 const Books = (props) => {
   const [genre, setGenre] = useState('')
@@ -28,11 +20,8 @@ const Books = (props) => {
 
   const displayButtons = () => {
     if (genre && genre !== '') {
-      const l = books.map(b => b.genres.includes(genre) ? <BookItem key={b.title} title={b.title} author={b.author.name} published={b.published} /> : null)
-      console.log(l)
-      return l
-    }
-    else {
+      return books.map(b => b.genres.includes(genre) ? <BookItem key={b.title} title={b.title} author={b.author.name} published={b.published} /> : null)
+    } else {
       return books.map(b => <BookItem key={b.title} title={b.title} author={b.author.name} published={b.published} />)
     }
   }

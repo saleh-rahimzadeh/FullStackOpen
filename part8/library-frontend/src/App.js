@@ -7,7 +7,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import UpdateAuthor from './components/UpdateAuthor'
 import LoginForm from './components/LoginForm'
-
+import Recommend from './components/Recommend'
 
 
 const QUERY_ALL_AUTHORS = gql`
@@ -31,6 +31,14 @@ const QUERY_ALL_BOOKS = gql`
       genres
     }
   }
+`
+
+const QUERY_ME = gql`
+ {
+  me {
+    favoriteGenre
+  }
+ }
 `
 
 const MUTATION_CREATE_BOOK = gql`
@@ -94,7 +102,7 @@ const App = () => {
 
   const authors = useQuery(QUERY_ALL_AUTHORS)
   const books = useQuery(QUERY_ALL_BOOKS)
-
+  
   const [addBook] = useMutation(MUTATION_CREATE_BOOK, {
     onError: handleError,
     refetchQueries: [{ query: QUERY_ALL_BOOKS }, { query: QUERY_ALL_AUTHORS }]
@@ -111,6 +119,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
+    setPage('authors')
   }
 
   const errorNotification = () => errorMessage &&
@@ -140,17 +149,20 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={() => setPage('editAuthor')}>edit author</button>
+        <button onClick={() => setPage('recommend')}>Recommend</button>
         <button onClick={logout}>logout</button>
       </div>
 
       {errorNotification()}
 
       <Authors
-        show={page === 'authors'} result={authors}
+        show={page === 'authors'} 
+        result={authors}
       />
 
       <Books
-        show={page === 'books'} result={books}
+        show={page === 'books'} 
+        result={books}
       />
 
       <NewBook
@@ -162,6 +174,12 @@ const App = () => {
         show={page === 'editAuthor'}
         editAuthor={editAuthor}
         result={authors}
+      />
+
+      <Recommend 
+        show={page === 'recommend'}
+        query={QUERY_ME}
+        result={books}
       />
 
     </div>
