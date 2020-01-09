@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient, useSubscription } from '@apollo/react-hooks'
 
 import Authors from './components/Authors'
 import Books from './components/Books'
@@ -9,6 +9,17 @@ import UpdateAuthor from './components/UpdateAuthor'
 import LoginForm from './components/LoginForm'
 import Recommend from './components/Recommend'
 
+
+const BOOK_DETAILS = gql`
+  fragment BookDetails on BOOK {
+    title
+    author {
+      name
+    }
+    published
+    genres
+  }
+`
 
 const QUERY_ALL_AUTHORS = gql`
   {
@@ -23,14 +34,10 @@ const QUERY_ALL_AUTHORS = gql`
 const QUERY_ALL_BOOKS = gql`
   {
     allBooks {
-      title
-      author {
-        name
-      }
-      published
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}  
 `
 
 const QUERY_ME = gql`
@@ -55,9 +62,10 @@ const MUTATION_CREATE_BOOK = gql`
       published: $published,
       genres: $genres
     ) {
-      title
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const MUTATION_EDIT_AUTHOR = gql`
@@ -93,6 +101,10 @@ const App = () => {
 
   const client = useApolloClient()
 
+  const notify = (message) => {
+    window.alert(message)
+  }
+
   const handleError = (error) => {
     setErrorMessage(error.message)
     setTimeout(() => {
@@ -102,6 +114,14 @@ const App = () => {
 
   const authors = useQuery(QUERY_ALL_AUTHORS)
   const books = useQuery(QUERY_ALL_BOOKS)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+    }
+  })
   
   const [addBook] = useMutation(MUTATION_CREATE_BOOK, {
     onError: handleError,
