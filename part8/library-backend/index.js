@@ -106,7 +106,8 @@ const resolvers = {
       */
       if (args.genre) {
         result = result.filter(b => b.genres.includes(args.genre))
-      }      
+      }
+      const books = await Book.find({}).populate('author', { _id: 1, name: 1 } )
       return result.map(b => ({
         title: b.title,
         published: b.published,
@@ -114,7 +115,8 @@ const resolvers = {
         author: {
           name: b.author.name,
           born: b.author.born
-        }
+        },
+        bookCount: books.filter(b => b.author && b.author.name === a.name).length
       }))
     },
     allAuthors: async () => {
