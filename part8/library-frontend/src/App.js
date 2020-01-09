@@ -112,6 +112,20 @@ const App = () => {
     }, 10000)
   }
 
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id)  
+
+    const dataInStore = client.readQuery({ query: QUERY_ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook)
+      client.writeQuery({
+        query: QUERY_ALL_BOOKS,
+        data: dataInStore
+      })
+    }   
+  }
+
   const authors = useQuery(QUERY_ALL_AUTHORS)
   const books = useQuery(QUERY_ALL_BOOKS)
 
@@ -125,10 +139,9 @@ const App = () => {
   
   const [addBook] = useMutation(MUTATION_CREATE_BOOK, {
     onError: handleError,
-    refetchQueries: [
-      { query: QUERY_ALL_BOOKS }, 
-      { query: QUERY_ALL_AUTHORS }
-    ]
+    update: (store, response) => {
+      updateCacheWith(response.data.addBook)
+    }
   })
   const [editAuthor] = useMutation(MUTATION_EDIT_AUTHOR, {
     onError: handleError,
