@@ -1,4 +1,4 @@
-interface Result {
+interface ExerciseResult {
   periodLength:       number;
   trainingDays:       number;
   success:            boolean;
@@ -8,7 +8,7 @@ interface Result {
   average:            number;
 }
 
-const calculateExercises = (hours: number[], target: number): Result => {
+const calculateExercises = (hours: number[], target: number): ExerciseResult => {
   const result = {
     periodLength: hours.length,
     trainingDays: hours.filter(hour => hour > 0).length,
@@ -28,34 +28,20 @@ const calculateExercises = (hours: number[], target: number): Result => {
     result.ratingDescription = 'not too bad but could be better';
   } else {
     result.rating = 1;
-    result.ratingDescription = 'not good';
+    result.ratingDescription = 'bad';
   }
 
   return result;
 };
 
-interface Inputs {
-  target: number;
-  hours: number[];
-}
+const parsePostArguments = (args: Array<string>, target: string): number[] => {
+  if (args.length == 0) throw new Error('parameters missing');
+  if (isNaN(Number(target))) throw new Error('malformatted parameters');
 
-const parseArguments = (args: Array<string>): Inputs => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-
-  const [ target, ...hours ] = args.slice(2).map(item => {
-    if (isNaN(Number(item))) throw new Error('Arguments are not valid number');
+  return args.map(item => {
+    if (isNaN(Number(item))) throw new Error('malformatted parameters');
     return Number(item);
   });
-
-  return {
-    target,
-    hours,
-  };
 };
 
-try {
-  const inputs: Inputs = parseArguments(process.argv);
-  console.log(calculateExercises(inputs.hours, inputs.target));
-} catch (e) {
-  console.log('Error in calculation : ', e.message);
-}
+export { parsePostArguments, calculateExercises };
