@@ -8,8 +8,8 @@ app.get('/hello', (_req, res) => {
 });
 
 app.get('/bmi', (req, res) => {
-  let { height, weight } = req.query;
-  let args : Array<string> = [];
+  const { height, weight } = req.query;
+  const args: Array<string> = [];
   if (height != undefined) args.push(height);
   if (weight != undefined) args.push(weight);
 

@@ -1,15 +1,15 @@
 interface Result {
-  periodLength:       number,
-  trainingDays:       number,
-  success:            boolean,
-  rating:             number,
-  ratingDescription:  string,
-  target:             number,
-  average:            number,
+  periodLength:       number;
+  trainingDays:       number;
+  success:            boolean;
+  rating:             number;
+  ratingDescription:  string;
+  target:             number;
+  average:            number;
 }
 
 const calculateExercises = (hours: number[], target: number): Result => {
-  let result = {
+  const result = {
     periodLength: hours.length,
     trainingDays: hours.filter(hour => hour > 0).length,
     average: hours.reduce((acc, value) => acc + value) / hours.length,
@@ -32,17 +32,17 @@ const calculateExercises = (hours: number[], target: number): Result => {
   }
 
   return result;
-}
+};
 
 interface Inputs {
-  target: number,
-  hours: number[]
+  target: number;
+  hours: number[];
 }
 
 const parseArguments = (args: Array<string>): Inputs => {
   if (args.length < 4) throw new Error('Not enough arguments');
 
-  let [ target, ...hours ] = args.slice(2).map(item => {
+  const [ target, ...hours ] = args.slice(2).map(item => {
     if (isNaN(Number(item))) throw new Error('Arguments are not valid number');
     return Number(item);
   });
@@ -51,10 +51,10 @@ const parseArguments = (args: Array<string>): Inputs => {
     target,
     hours,
   };
-}
+};
 
 try {
-  const inputs : Inputs = parseArguments(process.argv);
+  const inputs: Inputs = parseArguments(process.argv);
   console.log(calculateExercises(inputs.hours, inputs.target));
 } catch (e) {
   console.log('Error in calculation : ', e.message);
