@@ -26,19 +26,13 @@ const calculateBmi = (height: number, weight: number): string => {
 }
 
 const parseArguments = (args: Array<string>): number[] => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-  if (args.length > 4) throw new Error('Too many arguments');
-  if (isNaN(Number(args[2])) || isNaN(Number(args[3]))) {
-    throw new Error('Provide 2 number values for Height and Weight!');
+  if (args.length < 2) throw new Error('Not enough arguments');
+  if (args.length > 2) throw new Error('Too many arguments');
+  if (isNaN(Number(args[0])) || isNaN(Number(args[1]))) {
+    throw new Error('malformatted parameters');
   }
 
-  return [Number(args[2]), Number(args[3])];
+  return [Number(args[0]), Number(args[1])];
 }
 
-try {
-  const [ height, weight ] = parseArguments(process.argv);
-  console.log(`Calculate BMI for height:${height} and weight:${weight}`);
-  console.log(calculateBmi(height, weight));
-} catch (e) {
-  console.log('Error in calculation : ', e.message);
-}
+export { calculateBmi, parseArguments };
