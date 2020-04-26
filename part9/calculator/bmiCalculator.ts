@@ -25,5 +25,20 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 }
 
-console.log("Calculate BMI for height:180 and weight:74");
-console.log(calculateBmi(180, 74));
+const parseArguments = (args: Array<string>): number[] => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  if (args.length > 4) throw new Error('Too many arguments');
+  if (isNaN(Number(args[2])) || isNaN(Number(args[3]))) {
+    throw new Error('Provide 2 number values for Height and Weight!');
+  }
+
+  return [Number(args[2]), Number(args[3])];
+}
+
+try {
+  const [ height, weight ] = parseArguments(process.argv);
+  console.log(`Calculate BMI for height:${height} and weight:${weight}`);
+  console.log(calculateBmi(height, weight));
+} catch (e) {
+  console.log('Error in calculation : ', e.message);
+}

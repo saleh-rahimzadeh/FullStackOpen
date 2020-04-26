@@ -34,4 +34,28 @@ const calculateExercises = (hours: number[], target: number): Result => {
   return result;
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+interface Inputs {
+  target: number,
+  hours: number[]
+}
+
+const parseArguments = (args: Array<string>): Inputs => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+
+  let [ target, ...hours ] = args.slice(2).map(item => {
+    if (isNaN(Number(item))) throw new Error('Arguments are not valid number');
+    return Number(item);
+  });
+
+  return {
+    target,
+    hours,
+  };
+}
+
+try {
+  const inputs : Inputs = parseArguments(process.argv);
+  console.log(calculateExercises(inputs.hours, inputs.target));
+} catch (e) {
+  console.log('Error in calculation : ', e.message);
+}
