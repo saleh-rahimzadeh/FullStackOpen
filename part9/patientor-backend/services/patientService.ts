@@ -1,7 +1,14 @@
 import patientData from '../data/patients.json';
 import { PatientEntry, PatientEntryNonSensitive, NewPatientEntry } from '../types';
+import toNewPatientEntry from '../utils';
 
-const data: Array<PatientEntry> = patientData as Array<PatientEntry>;
+
+const data: PatientEntry[] = patientData.map(item => {
+  const object = toNewPatientEntry(item) as PatientEntry;
+  object.id = item.id;
+  return object;
+});
+
 
 const getItems = (): Array<PatientEntry> => {
    return data;
@@ -26,6 +33,7 @@ const addItem = (entry: NewPatientEntry): PatientEntry => {
   data.push(newPatient);
   return newPatient;
 };
+
 
 export default {
   getItems,
