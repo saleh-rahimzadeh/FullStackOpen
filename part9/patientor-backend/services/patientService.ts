@@ -1,5 +1,5 @@
 import patientData from '../data/patients.json';
-import { PatientEntry, PatientEntryNonSensitive } from '../types';
+import { PatientEntry, PatientEntryNonSensitive, NewPatientEntry } from '../types';
 
 const data: Array<PatientEntry> = patientData as Array<PatientEntry>;
 
@@ -17,7 +17,18 @@ const getNonSensitiveItems = (): Array<PatientEntryNonSensitive> => {
   }));
 };
 
+const addItem = (entry: NewPatientEntry): PatientEntry => {
+  const newPatient: PatientEntry = {
+    id: (data.length + 1) + '-' + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10),
+    ...entry
+  };
+
+  data.push(newPatient);
+  return newPatient;
+};
+
 export default {
   getItems,
-  getNonSensitiveItems
+  getNonSensitiveItems,
+  addItem
 };
