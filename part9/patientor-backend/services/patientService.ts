@@ -1,11 +1,12 @@
 import patientData from '../data/patients.json';
-import { PatientEntry, PatientEntryNonSensitive, NewPatientEntry } from '../types';
+import { PatientEntry, PatientEntryNonSensitive, NewPatientEntry, Entry } from '../types';
 import toNewPatientEntry from '../utils';
 
 
 const data: PatientEntry[] = patientData.map(item => {
   const object = toNewPatientEntry(item) as PatientEntry;
   object.id = item.id;
+  object.entries = new Array<Entry>();
   return object;
 });
 
@@ -34,9 +35,14 @@ const addItem = (entry: NewPatientEntry): PatientEntry => {
   return newPatient;
 };
 
+const getItem = (id: string): PatientEntry | undefined => {
+  return data.find(item => item.id === id);
+};
+
 
 export default {
   getItems,
   getNonSensitiveItems,
-  addItem
+  addItem,
+  getItem
 };
